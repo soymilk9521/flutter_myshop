@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/pages/ProductList.dart';
 import 'package:flutter_myshop/pages/routes/routes.dart';
+import 'package:flutter_myshop/pages/tabs/Tabs.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,8 +18,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/",
-      onGenerateRoute: onGenerateRoute,
+      // initialRoute: Tabs.root,
+      initialRoute: ProductListPage.routeName,
+      routes: routes,
+      // onGenerateRoute: onGenerateRoute,
       debugShowCheckedModeBanner: false,
     );
   }

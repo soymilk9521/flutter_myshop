@@ -5,6 +5,7 @@ import 'package:flutter_myshop/pages/tabs/Home.dart';
 import 'package:flutter_myshop/pages/tabs/User.dart';
 
 class Tabs extends StatefulWidget {
+  static const root = "/";
   Tabs({Key key}) : super(key: key);
 
   @override
@@ -13,12 +14,18 @@ class Tabs extends StatefulWidget {
 
 class _TabsState extends State<Tabs> {
   int _currentIndex = 1;
+  PageController _pageController;
   List<Widget> _pageList = [
     HomePage(),
     CategoryPage(),
     CartPage(),
     UserPage(),
   ];
+  @override
+  void initState() {
+    super.initState();
+    this._pageController = new PageController(initialPage: this._currentIndex);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,13 @@ class _TabsState extends State<Tabs> {
       appBar: AppBar(
         title: Text("KLR商城"),
       ),
-      body: this._pageList[this._currentIndex],
+      body: PageView(
+        children: this._pageList,
+        controller: this._pageController,
+        onPageChanged: (value) {
+          print(value);
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         fixedColor: Colors.red,
@@ -43,7 +56,7 @@ class _TabsState extends State<Tabs> {
         onTap: (index) {
           setState(() {
             this._currentIndex = index;
-            print(this._currentIndex);
+            this._pageController.jumpToPage(index);
           });
         },
       ),
