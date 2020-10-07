@@ -30,7 +30,7 @@ class _CartPageState extends State<CartPage> {
               context,
               ProductListPage.routeName,
               arguments: ProductArguments(
-                sId: "123456",
+                cId: "123456",
               ),
             );
           },

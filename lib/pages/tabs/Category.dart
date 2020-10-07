@@ -41,7 +41,6 @@ class _CategoryPageState extends State<CategoryPage>
 
   // 取得右侧分类数据
   void _getRightCateData(id) async {
-    print(id);
     var dio = Dio();
     Response response = await dio.get('${Config.domain}api/pcate?pid=$id');
     CateModel result = CateModel.fromJson(response.data);
@@ -118,7 +117,6 @@ class _CategoryPageState extends State<CategoryPage>
             itemCount: this._rightCateList.length,
             itemBuilder: (context, index) {
               String pic = this._rightCateList[index].pic;
-              print(pic);
               pic = Config.domain + pic.replaceAll('\\', '/');
               return InkWell(
                 onTap: () {
@@ -126,7 +124,7 @@ class _CategoryPageState extends State<CategoryPage>
                     context,
                     ProductListPage.routeName,
                     arguments: ProductArguments(
-                      sId: this._rightCateList[index].sId,
+                      cId: this._rightCateList[index].sId,
                     ),
                   );
                 },
