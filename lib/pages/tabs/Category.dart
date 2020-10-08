@@ -5,6 +5,7 @@ import 'package:flutter_myshop/pages/ProductList.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_myshop/widget/LoadingWidget.dart';
 
 class CategoryPage extends StatefulWidget {
   CategoryPage({Key key}) : super(key: key);
@@ -159,7 +160,7 @@ class _CategoryPageState extends State<CategoryPage>
           padding: EdgeInsets.all(10),
           height: double.infinity,
           color: Color.fromRGBO(240, 246, 246, 0.9),
-          child: Text("数据加载中..."),
+          child: LoadingWidget(),
         ),
       );
     }

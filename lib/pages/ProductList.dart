@@ -8,7 +8,8 @@ import 'package:flutter_myshop/widget/LoadingWidget.dart';
 
 class ProductListPage extends StatefulWidget {
   static const routeName = "/productList";
-  ProductListPage({Key key}) : super(key: key);
+  final ProductArguments arguments;
+  ProductListPage({Key key, this.arguments}) : super(key: key);
 
   @override
   _ProductListPageState createState() => _ProductListPageState();
@@ -17,30 +18,60 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  ProductArguments _arguments;
   List<ProductItemModel> _productList = [];
 
-  void _getProductData() async {
-    var dio = Dio();
-    String url =
-        '${Config.domain}api/plist?cId=${this._arguments.cId}&page=${this._arguments.page}&sort=${this._arguments.sort}';
-    print(url);
-    Response response = await dio.get(url);
+  ScrollController _scrollController = ScrollController();
 
-    ProductModel result = ProductModel.fromJson(response.data);
-    setState(() {
-      this._productList.addAll(result.result);
+  @override
+  void initState() {
+    super.initState();
+    _getProductData();
+    _scrollController.addListener(() {
+      // _scrollController.position.pixels // 滚动条滚动位置
+      // _scrollController.position.maxScrollExtent // 滚动条最大滚动位置
+      if (_scrollController.position.pixels >
+          _scrollController.position.maxScrollExtent - 20) {
+        if (widget.arguments.flag && widget.arguments.hasMore) {
+          _getProductData();
+        }
+      }
     });
   }
 
+  void _getProductData() async {
+    setState(() {
+      widget.arguments.flag = false;
+    });
+    var dio = Dio();
+    ProductArguments args = widget.arguments;
+    String url =
+        '${Config.domain}api/plist?cId=${args.cId}&page=${args.page}&sort=${args.sort}&pageSize=${args.pageSize}';
+    print("url:$url");
+    if (widget.arguments != null) {
+      Response response = await dio.get(url);
+      ProductModel result = ProductModel.fromJson(response.data);
+      setState(() {
+        if (result.result.length < args.pageSize) {
+          args.hasMore = false;
+        }
+        this._productList.addAll(result.result);
+        widget.arguments.page++;
+        widget.arguments.flag = true;
+      });
+    }
+  }
+
   Widget _productListWidget() {
-    print(this._productList.length);
     if (this._productList.length > 0) {
       return Padding(
         padding: EdgeInsets.fromLTRB(10, ScreenAdaper.height(100), 10, 10),
         child: ListView.builder(
+          controller: this._scrollController,
           itemCount: this._productList.length,
           itemBuilder: (context, index) {
+            // 图片处理
+            String pic = this._productList[index].pic;
+            pic = Config.domain + pic.replaceAll('\\', '/');
             return Column(
               children: [
                 Row(
@@ -51,7 +82,7 @@ class _ProductListPageState extends State<ProductListPage> {
                       child: AspectRatio(
                         aspectRatio: 1 / 1,
                         child: Image.network(
-                          "https://www.itying.com/images/flutter/list2.jpg",
+                          pic,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -66,7 +97,7 @@ class _ProductListPageState extends State<ProductListPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "gb好孩子 婴儿推车 新生儿 宝宝 手推车 可坐可躺 轻便折叠 双向推行 藏青C400-P303BBgb好孩子 婴儿推车 新生儿 宝宝 手推车 可坐可躺 轻便折叠 双向推行 藏青C400-P303BB",
+                              "${this._productList[index].title}",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -95,7 +126,7 @@ class _ProductListPageState extends State<ProductListPage> {
                               ],
                             ),
                             Text(
-                              "￥899",
+                              "￥${this._productList[index].price}",
                               style: TextStyle(
                                 color: Colors.red,
                                 fontSize: 16,
@@ -108,6 +139,7 @@ class _ProductListPageState extends State<ProductListPage> {
                   ],
                 ),
                 Divider(),
+                _showBottomWidget(index),
               ],
             );
           },
@@ -115,6 +147,18 @@ class _ProductListPageState extends State<ProductListPage> {
       );
     } else {
       return LoadingWidget();
+    }
+  }
+
+  Widget _showBottomWidget(index) {
+    if (widget.arguments.hasMore) {
+      return (index == this._productList.length - 1)
+          ? LoadingWidget()
+          : Text("");
+    } else {
+      return (index == this._productList.length - 1)
+          ? Text("-- 我是有底线的 --")
+          : Text("");
     }
   }
 
@@ -200,8 +244,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
   @override
   Widget build(BuildContext context) {
-    _arguments = ModalRoute.of(context).settings.arguments;
-    print(_arguments.cId);
+    // _arguments = ModalRoute.of(context).settings.arguments;
     ScreenAdaper.init(context);
     return Scaffold(
       key: _scaffoldKey,

@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: Tabs.root,
       // initialRoute: ProductListPage.routeName,
       routes: routes,
-      // onGenerateRoute: onGenerateRoute,
+      onGenerateRoute: onGenerateRoute,
       debugShowCheckedModeBanner: false,
     );
   }
