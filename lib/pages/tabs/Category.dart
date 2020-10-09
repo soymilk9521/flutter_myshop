@@ -33,11 +33,11 @@ class _CategoryPageState extends State<CategoryPage>
     CateModel result = CateModel.fromJson(response.data);
     setState(() {
       this._leftCateList = result.result;
-      // 取得右侧分类数据
-      if (this._leftCateList.length > 0) {
-        _getRightCateData(this._leftCateList[0].sId);
-      }
     });
+    // 取得右侧分类数据
+    if (this._leftCateList.length > 0) {
+      _getRightCateData(this._leftCateList[0].sId);
+    }
   }
 
   // 取得右侧分类数据

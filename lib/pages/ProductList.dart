@@ -162,83 +162,158 @@ class _ProductListPageState extends State<ProductListPage> {
     }
   }
 
-  Widget _topBarWidget() {
+  List _subHeaderList = [
+    {"id": 1, "title": "综合", "fileds": "all", "sort": -1, "showIcon": false},
+    {
+      "id": 2,
+      "title": "销量",
+      "fileds": "salecount",
+      "sort": -1,
+      "showIcon": true
+    },
+    {"id": 3, "title": "价格", "fileds": "price", "sort": -1, "showIcon": true},
+    {"id": 4, "title": "筛选", "showIcon": false},
+  ];
+
+  int _selectedHeaderId = 1;
+  void _subHeaderChange(id) {
+    if (id == 4) {
+      this._scaffoldKey.currentState.openEndDrawer();
+    }
+    setState(() {
+      this._selectedHeaderId = id;
+      // 重置排序
+      widget.arguments.sort =
+          "${this._subHeaderList[id - 1]["fileds"]}_${this._subHeaderList[id - 1]["sort"]}";
+      // 再次点击倒序排列
+      this._subHeaderList[id - 1]["sort"] =
+          this._subHeaderList[id - 1]["sort"] * -1;
+      // 重置分页
+      widget.arguments.page = 1;
+      // 重置列表
+      this._productList = [];
+      // 重置hasMore
+      widget.arguments.hasMore = true;
+      // 重置滚动条
+      this._scrollController.jumpTo(0);
+    });
+
+    // 重新获取数据
+    this._getProductData();
+  }
+
+  Widget _showTitleIconWidget(e) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          e["title"],
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color:
+                (this._selectedHeaderId == e["id"]) ? Colors.red : Colors.black,
+          ),
+        ),
+        (e["showIcon"])
+            ? (e["sort"] > 0
+                ? Icon(Icons.arrow_drop_down)
+                : Icon(Icons.arrow_drop_up))
+            : Text(""),
+      ],
+    );
+  }
+
+  Widget _subHeaderWidget() {
     return Positioned(
       top: 0,
       child: Container(
-          height: ScreenAdaper.height(90),
-          width: ScreenAdaper.width(1200),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                width: 1,
-                color: Color.fromRGBO(233, 233, 233, 0.9),
-              ),
+        height: ScreenAdaper.height(90),
+        width: ScreenAdaper.width(1200),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              width: 1,
+              color: Color.fromRGBO(233, 233, 233, 0.9),
             ),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-                    child: Text(
-                      "综合",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                  onTap: () {},
+        ),
+        child: Row(
+          children: this._subHeaderList.map((e) {
+            return Expanded(
+              flex: 1,
+              child: InkWell(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
+                  child: _showTitleIconWidget(e),
                 ),
+                onTap: () {
+                  _subHeaderChange(e["id"]);
+                },
               ),
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-                    child: Text(
-                      "价格",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  onTap: () {},
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-                    child: Text(
-                      "热销",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  onTap: () {},
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-                    child: Text(
-                      "筛选",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  onTap: () {
-                    this._scaffoldKey.currentState.openEndDrawer();
-                  },
-                ),
-              ),
-            ],
-          )),
+            );
+          }).toList(),
+          // Expanded(
+          //   flex: 1,
+          //   child: InkWell(
+          //     child: Padding(
+          //       padding: EdgeInsets.fromLTRB(
+          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
+          //       child: Text(
+          //         "综合",
+          //         textAlign: TextAlign.center,
+          //         style: TextStyle(color: Colors.red),
+          //       ),
+          //     ),
+          //     onTap: () {},
+          //   ),
+          // ),
+          // Expanded(
+          //   flex: 1,
+          //   child: InkWell(
+          //     child: Padding(
+          //       padding: EdgeInsets.fromLTRB(
+          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
+          //       child: Text(
+          //         "价格",
+          //         textAlign: TextAlign.center,
+          //       ),
+          //     ),
+          //     onTap: () {},
+          //   ),
+          // ),
+          // Expanded(
+          //   flex: 1,
+          //   child: InkWell(
+          //     child: Padding(
+          //       padding: EdgeInsets.fromLTRB(
+          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
+          //       child: Text(
+          //         "热销",
+          //         textAlign: TextAlign.center,
+          //       ),
+          //     ),
+          //     onTap: () {},
+          //   ),
+          // ),
+          // Expanded(
+          //   flex: 1,
+          //   child: InkWell(
+          //     child: Padding(
+          //       padding: EdgeInsets.fromLTRB(
+          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
+          //       child: Text(
+          //         "筛选",
+          //         textAlign: TextAlign.center,
+          //       ),
+          //     ),
+          //     onTap: () {
+          //       this._scaffoldKey.currentState.openEndDrawer();
+          //     },
+          //   ),
+          // ),
+        ),
+      ),
     );
   }
 
@@ -257,7 +332,7 @@ class _ProductListPageState extends State<ProductListPage> {
       body: Stack(
         children: [
           _productListWidget(),
-          _topBarWidget(),
+          _subHeaderWidget(),
         ],
       ),
       endDrawer: Drawer(
