@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/pages/Search.dart';
 import 'package:flutter_myshop/pages/tabs/Cart.dart';
 import 'package:flutter_myshop/pages/tabs/Category.dart';
 import 'package:flutter_myshop/pages/tabs/Home.dart';
 import 'package:flutter_myshop/pages/tabs/User.dart';
+import 'package:flutter_myshop/services/ScreenAdaper.dart';
 
 class Tabs extends StatefulWidget {
   static const root = "/";
@@ -29,16 +31,47 @@ class _TabsState extends State<Tabs> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenAdapter.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("KLR商城"),
+        leading: Icon(Icons.center_focus_weak, color: Colors.black87, size: 28),
+        title: InkWell(
+          child: Container(
+            height: ScreenAdapter.height(76),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(233, 233, 233, 0.8),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            padding: EdgeInsets.only(left: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.search),
+                Text(
+                  "笔记本",
+                  style: TextStyle(fontSize: ScreenAdapter.size(28)),
+                )
+              ],
+            ),
+          ),
+          onTap: () {
+            Navigator.pushNamed(context, SearchPage.routeName);
+          },
+        ),
+        actions: [
+          Icon(Icons.message, color: Colors.black87, size: 28),
+          SizedBox(width: 10)
+        ],
       ),
       body: PageView(
         children: this._pageList,
         controller: this._pageController,
         onPageChanged: (value) {
-          print(value);
+          setState(() {
+            this._currentIndex = value;
+          });
         },
+        // physics: NeverScrollableScrollPhysics(), // 禁止滑动
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

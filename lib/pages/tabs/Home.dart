@@ -99,14 +99,14 @@ class _HomePageState extends State<HomePage>
   Widget _titleWidget(String title) {
     return Container(
       alignment: Alignment.centerLeft,
-      height: ScreenAdaper.height(45),
-      margin: EdgeInsets.only(left: ScreenAdaper.width(20)),
-      padding: EdgeInsets.only(left: ScreenAdaper.width(20)),
+      height: ScreenAdapter.height(45),
+      margin: EdgeInsets.only(left: ScreenAdapter.width(20)),
+      padding: EdgeInsets.only(left: ScreenAdapter.width(20)),
       decoration: BoxDecoration(
         border: Border(
           left: BorderSide(
             color: Colors.red,
-            width: ScreenAdaper.width(10),
+            width: ScreenAdapter.width(10),
           ),
         ),
       ),
@@ -121,8 +121,8 @@ class _HomePageState extends State<HomePage>
   Widget _hotProductsWidget() {
     if (this._hotProductList.length > 0) {
       return Container(
-        padding: EdgeInsets.all(ScreenAdaper.width(20)),
-        height: ScreenAdaper.height(230),
+        padding: EdgeInsets.all(ScreenAdapter.width(20)),
+        height: ScreenAdapter.height(230),
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: this._hotProductList.length,
@@ -132,16 +132,16 @@ class _HomePageState extends State<HomePage>
               return Column(
                 children: [
                   Container(
-                    height: ScreenAdaper.height(150),
-                    width: ScreenAdaper.width(150),
-                    margin: EdgeInsets.only(right: ScreenAdaper.width(20)),
+                    height: ScreenAdapter.height(150),
+                    width: ScreenAdapter.width(150),
+                    margin: EdgeInsets.only(right: ScreenAdapter.width(20)),
                     child: Image.network(
                       "$pic",
                       fit: BoxFit.cover,
                     ),
                   ),
                   Container(
-                    height: ScreenAdaper.height(30),
+                    height: ScreenAdapter.height(30),
                     child: Text("￥ ${this._hotProductList[index].price}"),
                   ),
                 ],
@@ -154,14 +154,14 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _recProductItemWediget() {
-    double itemWidth = (ScreenAdaper.width(ScreenAdaper.getScreenWidthPx()) -
-            ScreenAdaper.width(20) * 3) /
+    double itemWidth = (ScreenAdapter.width(ScreenAdapter.getScreenWidthPx()) -
+            ScreenAdapter.width(20) * 3) /
         2;
     return Container(
-      padding: EdgeInsets.all(ScreenAdaper.width(20)),
+      padding: EdgeInsets.all(ScreenAdapter.width(20)),
       child: Wrap(
-        spacing: ScreenAdaper.width(20),
-        runSpacing: ScreenAdaper.height(20),
+        spacing: ScreenAdapter.width(20),
+        runSpacing: ScreenAdapter.height(20),
         children: this._bestProductList.map((value) {
           String pic = value.sPic;
           pic = Config.domain + pic.replaceAll('\\', '/');
@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage>
               children: [
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(ScreenAdaper.width(20)),
+                  padding: EdgeInsets.all(ScreenAdapter.width(20)),
                   child: AspectRatio(
                     aspectRatio: 1 / 1,
                     child: Image.network(
@@ -186,9 +186,9 @@ class _HomePageState extends State<HomePage>
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(
-                    ScreenAdaper.width(20),
-                    ScreenAdaper.height(20),
-                    ScreenAdaper.width(20),
+                    ScreenAdapter.width(20),
+                    ScreenAdapter.height(20),
+                    ScreenAdapter.width(20),
                     0,
                   ),
                   child: Text(
@@ -200,10 +200,10 @@ class _HomePageState extends State<HomePage>
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(
-                      ScreenAdaper.width(20),
-                      ScreenAdaper.height(20),
-                      ScreenAdaper.width(20),
-                      ScreenAdaper.height(10)),
+                      ScreenAdapter.width(20),
+                      ScreenAdapter.height(20),
+                      ScreenAdapter.width(20),
+                      ScreenAdapter.height(10)),
                   child: Stack(
                     children: [
                       Align(
@@ -241,16 +241,16 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     // 初始化ScreenUtil组件
-    ScreenAdaper.init(context);
+    ScreenAdapter.init(context);
     return ListView(
       children: [
         _swiperWidget(),
-        SizedBox(height: ScreenAdaper.height(10)),
+        SizedBox(height: ScreenAdapter.height(10)),
         _titleWidget("猜你喜欢"),
-        SizedBox(height: ScreenAdaper.height(10)),
+        SizedBox(height: ScreenAdapter.height(10)),
         _hotProductsWidget(),
         _titleWidget("热门推荐"),
-        SizedBox(height: ScreenAdaper.height(10)),
+        SizedBox(height: ScreenAdapter.height(10)),
         _recProductItemWediget(),
       ],
     );

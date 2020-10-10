@@ -23,6 +23,7 @@ class _MyAppState extends State<MyApp> {
       routes: routes,
       onGenerateRoute: onGenerateRoute,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(primaryColor: Colors.white),
     );
   }
 }

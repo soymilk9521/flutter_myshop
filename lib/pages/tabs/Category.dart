@@ -63,9 +63,9 @@ class _CategoryPageState extends State<CategoryPage>
               children: [
                 InkWell(
                   child: Container(
-                    padding: EdgeInsets.only(top: ScreenAdaper.height(22)),
+                    padding: EdgeInsets.only(top: ScreenAdapter.height(22)),
                     width: double.infinity,
-                    height: ScreenAdaper.height(90),
+                    height: ScreenAdapter.height(90),
                     color: (this._selectedIndex == index)
                         ? Color.fromRGBO(240, 246, 246, 0.9)
                         : Colors.white,
@@ -140,7 +140,7 @@ class _CategoryPageState extends State<CategoryPage>
                         ),
                       ),
                       Container(
-                        height: ScreenAdaper.height(32),
+                        height: ScreenAdapter.height(32),
                         child: Text(
                           "${this._rightCateList[index].title}",
                         ),
@@ -168,12 +168,12 @@ class _CategoryPageState extends State<CategoryPage>
 
   @override
   Widget build(BuildContext context) {
-    ScreenAdaper.init(context);
-    double leftWidth = ScreenAdaper.getScreenWidth() / 4;
+    ScreenAdapter.init(context);
+    double leftWidth = ScreenAdapter.getScreenWidth() / 4;
     double rightItemWidth =
-        (ScreenAdaper.getScreenWidth() - leftWidth - 10 * 2 - 10 * 2) / 3;
-    rightItemWidth = ScreenAdaper.width(rightItemWidth);
-    double rightItemHeight = rightItemWidth + ScreenAdaper.height(32);
+        (ScreenAdapter.getScreenWidth() - leftWidth - 10 * 2 - 10 * 2) / 3;
+    rightItemWidth = ScreenAdapter.width(rightItemWidth);
+    double rightItemHeight = rightItemWidth + ScreenAdapter.height(32);
     return Row(
       children: [
         _leftCateWidget(leftWidth),

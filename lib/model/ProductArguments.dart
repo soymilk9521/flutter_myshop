@@ -5,6 +5,7 @@ class ProductArguments {
   int pageSize;
   bool flag;
   bool hasMore;
+  String keywords;
   ProductArguments({
     this.cId = "",
     this.sort = "",
@@ -12,5 +13,6 @@ class ProductArguments {
     this.pageSize = 10,
     this.flag = true,
     this.hasMore = true,
+    this.keywords = "",
   });
 }

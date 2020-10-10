@@ -14,7 +14,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
-    ScreenAdaper.init(context);
+    ScreenAdapter.init(context);
     return Column(
       children: [
         RaisedButton(

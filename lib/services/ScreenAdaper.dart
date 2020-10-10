@@ -1,7 +1,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 
-class ScreenAdaper {
+class ScreenAdapter {
   static void init(context) {
     ScreenUtil.init(
       context,
@@ -28,5 +28,9 @@ class ScreenAdaper {
 
   static double getScreenWidthPx() {
     return ScreenUtil().screenWidthPx;
+  }
+
+  static double size(double size) {
+    return ScreenUtil().setSp(size);
   }
 }

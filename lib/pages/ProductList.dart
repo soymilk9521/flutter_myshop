@@ -44,8 +44,15 @@ class _ProductListPageState extends State<ProductListPage> {
     });
     var dio = Dio();
     ProductArguments args = widget.arguments;
-    String url =
-        '${Config.domain}api/plist?cId=${args.cId}&page=${args.page}&sort=${args.sort}&pageSize=${args.pageSize}';
+    String url = "";
+    if (["", null, false, 0].contains(args.keywords)) {
+      url =
+          '${Config.domain}api/plist?cId=${args.cId}&page=${args.page}&sort=${args.sort}&pageSize=${args.pageSize}';
+    } else {
+      url =
+          '${Config.domain}api/plist?search=${args.keywords}&page=${args.page}&sort=${args.sort}&pageSize=${args.pageSize}';
+    }
+
     print("url:$url");
     if (widget.arguments != null) {
       Response response = await dio.get(url);
@@ -64,7 +71,7 @@ class _ProductListPageState extends State<ProductListPage> {
   Widget _productListWidget() {
     if (this._productList.length > 0) {
       return Padding(
-        padding: EdgeInsets.fromLTRB(10, ScreenAdaper.height(100), 10, 10),
+        padding: EdgeInsets.fromLTRB(10, ScreenAdapter.height(100), 10, 10),
         child: ListView.builder(
           controller: this._scrollController,
           itemCount: this._productList.length,
@@ -77,8 +84,8 @@ class _ProductListPageState extends State<ProductListPage> {
                 Row(
                   children: [
                     Container(
-                      width: ScreenAdaper.width(260),
-                      height: ScreenAdaper.height(260),
+                      width: ScreenAdapter.width(260),
+                      height: ScreenAdapter.height(260),
                       child: AspectRatio(
                         aspectRatio: 1 / 1,
                         child: Image.network(
@@ -91,7 +98,7 @@ class _ProductListPageState extends State<ProductListPage> {
                       flex: 1,
                       child: Container(
                         padding: EdgeInsets.only(left: 10),
-                        height: ScreenAdaper.height(260),
+                        height: ScreenAdapter.height(260),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +111,7 @@ class _ProductListPageState extends State<ProductListPage> {
                             Row(
                               children: [
                                 Container(
-                                  height: ScreenAdaper.height(36),
+                                  height: ScreenAdapter.height(36),
                                   margin: EdgeInsets.only(right: 10),
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   decoration: BoxDecoration(
@@ -114,7 +121,7 @@ class _ProductListPageState extends State<ProductListPage> {
                                   child: Text("4g"),
                                 ),
                                 Container(
-                                  height: ScreenAdaper.height(36),
+                                  height: ScreenAdapter.height(36),
                                   margin: EdgeInsets.only(right: 10),
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   decoration: BoxDecoration(
@@ -179,27 +186,27 @@ class _ProductListPageState extends State<ProductListPage> {
   void _subHeaderChange(id) {
     if (id == 4) {
       this._scaffoldKey.currentState.openEndDrawer();
+    } else {
+      setState(() {
+        this._selectedHeaderId = id;
+        // 重置排序
+        widget.arguments.sort =
+            "${this._subHeaderList[id - 1]["fileds"]}_${this._subHeaderList[id - 1]["sort"]}";
+        // 再次点击倒序排列
+        this._subHeaderList[id - 1]["sort"] =
+            this._subHeaderList[id - 1]["sort"] * -1;
+        // 重置分页
+        widget.arguments.page = 1;
+        // 重置列表
+        this._productList = [];
+        // 重置hasMore
+        widget.arguments.hasMore = true;
+        // 重置滚动条
+        this._scrollController.jumpTo(0);
+      });
+      // 重新获取数据
+      this._getProductData();
     }
-    setState(() {
-      this._selectedHeaderId = id;
-      // 重置排序
-      widget.arguments.sort =
-          "${this._subHeaderList[id - 1]["fileds"]}_${this._subHeaderList[id - 1]["sort"]}";
-      // 再次点击倒序排列
-      this._subHeaderList[id - 1]["sort"] =
-          this._subHeaderList[id - 1]["sort"] * -1;
-      // 重置分页
-      widget.arguments.page = 1;
-      // 重置列表
-      this._productList = [];
-      // 重置hasMore
-      widget.arguments.hasMore = true;
-      // 重置滚动条
-      this._scrollController.jumpTo(0);
-    });
-
-    // 重新获取数据
-    this._getProductData();
   }
 
   Widget _showTitleIconWidget(e) {
@@ -227,8 +234,8 @@ class _ProductListPageState extends State<ProductListPage> {
     return Positioned(
       top: 0,
       child: Container(
-        height: ScreenAdaper.height(90),
-        width: ScreenAdaper.width(1200),
+        height: ScreenAdapter.height(90),
+        width: ScreenAdapter.width(1200),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -244,7 +251,7 @@ class _ProductListPageState extends State<ProductListPage> {
               child: InkWell(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(
-                      0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
+                      0, ScreenAdapter.height(20), 0, ScreenAdapter.height(20)),
                   child: _showTitleIconWidget(e),
                 ),
                 onTap: () {
@@ -253,65 +260,6 @@ class _ProductListPageState extends State<ProductListPage> {
               ),
             );
           }).toList(),
-          // Expanded(
-          //   flex: 1,
-          //   child: InkWell(
-          //     child: Padding(
-          //       padding: EdgeInsets.fromLTRB(
-          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-          //       child: Text(
-          //         "综合",
-          //         textAlign: TextAlign.center,
-          //         style: TextStyle(color: Colors.red),
-          //       ),
-          //     ),
-          //     onTap: () {},
-          //   ),
-          // ),
-          // Expanded(
-          //   flex: 1,
-          //   child: InkWell(
-          //     child: Padding(
-          //       padding: EdgeInsets.fromLTRB(
-          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-          //       child: Text(
-          //         "价格",
-          //         textAlign: TextAlign.center,
-          //       ),
-          //     ),
-          //     onTap: () {},
-          //   ),
-          // ),
-          // Expanded(
-          //   flex: 1,
-          //   child: InkWell(
-          //     child: Padding(
-          //       padding: EdgeInsets.fromLTRB(
-          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-          //       child: Text(
-          //         "热销",
-          //         textAlign: TextAlign.center,
-          //       ),
-          //     ),
-          //     onTap: () {},
-          //   ),
-          // ),
-          // Expanded(
-          //   flex: 1,
-          //   child: InkWell(
-          //     child: Padding(
-          //       padding: EdgeInsets.fromLTRB(
-          //           0, ScreenAdaper.height(20), 0, ScreenAdaper.height(20)),
-          //       child: Text(
-          //         "筛选",
-          //         textAlign: TextAlign.center,
-          //       ),
-          //     ),
-          //     onTap: () {
-          //       this._scaffoldKey.currentState.openEndDrawer();
-          //     },
-          //   ),
-          // ),
         ),
       ),
     );
@@ -320,7 +268,7 @@ class _ProductListPageState extends State<ProductListPage> {
   @override
   Widget build(BuildContext context) {
     // _arguments = ModalRoute.of(context).settings.arguments;
-    ScreenAdaper.init(context);
+    ScreenAdapter.init(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
