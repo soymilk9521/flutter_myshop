@@ -4,6 +4,7 @@ import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/ProductArguments.dart';
 import 'package:flutter_myshop/model/ProductModel.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
+import 'package:flutter_myshop/services/SearchService.dart';
 import 'package:flutter_myshop/widget/LoadingWidget.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -18,13 +19,17 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  bool _hasData = true;
   List<ProductItemModel> _productList = [];
 
   ScrollController _scrollController = ScrollController();
 
+  TextEditingController _initTextController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+    _initTextController.text = widget.arguments.keywords;
     _getProductData();
     _scrollController.addListener(() {
       // _scrollController.position.pixels // 滚动条滚动位置
@@ -53,11 +58,18 @@ class _ProductListPageState extends State<ProductListPage> {
           '${Config.domain}api/plist?search=${args.keywords}&page=${args.page}&sort=${args.sort}&pageSize=${args.pageSize}';
     }
 
-    print("url:$url");
-    if (widget.arguments != null) {
+    print("url --> $url");
+    print("args --> $args");
+    if (args != null) {
       Response response = await dio.get(url);
       ProductModel result = ProductModel.fromJson(response.data);
+
       setState(() {
+        if (result.result.length == 0 && args.page == 1) {
+          this._hasData = false;
+        } else {
+          this._hasData = true;
+        }
         if (result.result.length < args.pageSize) {
           args.hasMore = false;
         }
@@ -65,6 +77,8 @@ class _ProductListPageState extends State<ProductListPage> {
         widget.arguments.page++;
         widget.arguments.flag = true;
       });
+    } else {
+      this._hasData = false;
     }
   }
 
@@ -202,7 +216,9 @@ class _ProductListPageState extends State<ProductListPage> {
         // 重置hasMore
         widget.arguments.hasMore = true;
         // 重置滚动条
-        this._scrollController.jumpTo(0);
+        if (this._hasData) {
+          this._scrollController.jumpTo(0);
+        }
       });
       // 重新获取数据
       this._getProductData();
@@ -272,14 +288,52 @@ class _ProductListPageState extends State<ProductListPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("商品列表"),
+        title: Container(
+          height: ScreenAdapter.height(76),
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(233, 233, 233, 0.8),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          padding: EdgeInsets.only(left: 10),
+          child: TextField(
+            // autofocus: true,
+            controller: _initTextController,
+            style: TextStyle(fontSize: ScreenAdapter.size(28)),
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(5),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide.none),
+            ),
+            onChanged: (value) {
+              widget.arguments.keywords = value;
+            },
+          ),
+        ),
         actions: [
-          Text(""),
+          InkWell(
+            child: Container(
+              height: ScreenAdapter.height(76),
+              width: ScreenAdapter.width(150),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("搜索", style: TextStyle(fontSize: ScreenAdapter.size(32)))
+                ],
+              ),
+            ),
+            onTap: () {
+              _subHeaderChange(1);
+              SearchService.setHistoryList(widget.arguments.keywords);
+            },
+          )
         ],
       ),
       body: Stack(
         children: [
-          _productListWidget(),
+          this._hasData
+              ? _productListWidget()
+              : Center(child: Text("没有您要浏览的数据!")),
           _subHeaderWidget(),
         ],
       ),
