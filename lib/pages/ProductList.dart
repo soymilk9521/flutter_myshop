@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/ProductArguments.dart';
+import 'package:flutter_myshop/model/ProductContentArguments.dart';
 import 'package:flutter_myshop/model/ProductModel.dart';
+import 'package:flutter_myshop/pages/products/ProductContent.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/services/SearchService.dart';
 import 'package:flutter_myshop/widget/LoadingWidget.dart';
@@ -95,69 +97,80 @@ class _ProductListPageState extends State<ProductListPage> {
             pic = Config.domain + pic.replaceAll('\\', '/');
             return Column(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: ScreenAdapter.width(260),
-                      height: ScreenAdapter.height(260),
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Image.network(
-                          pic,
-                          fit: BoxFit.cover,
-                        ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      ProductContentPage.routeName,
+                      arguments: ProductContentArguments(
+                        sId: this._productList[index].cid,
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.only(left: 10),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        width: ScreenAdapter.width(260),
                         height: ScreenAdapter.height(260),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${this._productList[index].title}",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                  height: ScreenAdapter.height(36),
-                                  margin: EdgeInsets.only(right: 10),
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Color.fromRGBO(230, 230, 230, 0.9),
-                                  ),
-                                  child: Text("4g"),
-                                ),
-                                Container(
-                                  height: ScreenAdapter.height(36),
-                                  margin: EdgeInsets.only(right: 10),
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Color.fromRGBO(230, 230, 230, 0.9),
-                                  ),
-                                  child: Text("126"),
-                                )
-                              ],
-                            ),
-                            Text(
-                              "￥${this._productList[index].price}",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
+                        child: AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: Image.network(
+                            pic,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    )
-                  ],
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10),
+                          height: ScreenAdapter.height(260),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${this._productList[index].title}",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    height: ScreenAdapter.height(36),
+                                    margin: EdgeInsets.only(right: 10),
+                                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Color.fromRGBO(230, 230, 230, 0.9),
+                                    ),
+                                    child: Text("4g"),
+                                  ),
+                                  Container(
+                                    height: ScreenAdapter.height(36),
+                                    margin: EdgeInsets.only(right: 10),
+                                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Color.fromRGBO(230, 230, 230, 0.9),
+                                    ),
+                                    child: Text("126"),
+                                  )
+                                ],
+                              ),
+                              Text(
+                                "￥${this._productList[index].price}",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
                 Divider(),
                 _showBottomWidget(index),
