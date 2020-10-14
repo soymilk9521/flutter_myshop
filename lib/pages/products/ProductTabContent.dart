@@ -1,31 +1,126 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/config/Config.dart';
+import 'package:flutter_myshop/model/ProductContentModel.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
+import 'package:flutter_myshop/widget/JdButton.dart';
 
 class ProductTabContentPage extends StatefulWidget {
-  ProductTabContentPage({Key key}) : super(key: key);
+  final ProductContentItemModel itemModel;
+  ProductTabContentPage(this.itemModel, {Key key}) : super(key: key);
 
   @override
   _ProductTabContentPageState createState() => _ProductTabContentPageState();
 }
 
 class _ProductTabContentPageState extends State<ProductTabContentPage> {
+  List _attr = [];
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      this._attr = widget.itemModel.attr;
+    });
+  }
+
+  Widget _showAttrItemWidget(Attr item) {
+    return Wrap(
+      children: [
+        Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.only(top: 25),
+          width: ScreenAdapter.width(1200 / 4),
+          child: Text("${item.cate}"),
+        ),
+        Container(
+          width: ScreenAdapter.width(1200 / 4 * 3),
+          child: Wrap(
+            children: item.list.map((subItem) {
+              return Container(
+                margin: EdgeInsets.all(ScreenAdapter.width(20)),
+                child: Chip(label: Text("$subItem")),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _showSeletedDetailWidget() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return GestureDetector(
+          child: Stack(
+            children: [
+              ListView(
+                children: [
+                  Column(
+                    children: this._attr.map((item) {
+                      return this._showAttrItemWidget(item);
+                    }).toList(),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  height: ScreenAdapter.height(120),
+                  width: ScreenAdapter.width(1200),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: JdButton(
+                          color: Color.fromRGBO(253, 1, 0, 0.9),
+                          text: "加入购物车",
+                          cb: () {
+                            print("加入购物车1");
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: JdButton(
+                          color: Color.fromRGBO(255, 165, 0, 0.9),
+                          text: "立即购买",
+                          cb: () {
+                            print("立即购买");
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    ScreenAdapter.init(context);
+    String pic = "${widget.itemModel.pic}";
+    pic = Config.domain + pic.replaceAll('\\', '/');
+    print("ProductTabContent --> pic --> $pic");
     return Container(
         padding: EdgeInsets.all(10),
         child: ListView(
           children: [
             AspectRatio(
-              aspectRatio: 16 / 9,
+              aspectRatio: 16 / 12,
               child: Image.network(
-                "https://www.itying.com/images/flutter/p1.jpg",
+                pic,
                 fit: BoxFit.cover,
               ),
             ),
             Container(
               padding: EdgeInsets.only(top: 10),
               child: Text(
-                "联想（Lenovo）V110 14英寸手提便携轻薄笔记本电脑商务办公超极本笔记本电脑 9系A6独显款 8G内存 256G固态硬盘丨爆款 2G独显 黑色 14英寸 精装升级",
+                "${widget.itemModel.title}",
                 style: TextStyle(
                   color: Colors.black87,
                   fontSize: ScreenAdapter.size(36),
@@ -35,7 +130,7 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
             Container(
               padding: EdgeInsets.only(top: 10),
               child: Text(
-                "【联想V14-2020全新版，办公游戏两全其美】 新机型-十代酷睿强芯-MX330独显-FHD屏丨新品上市限时补贴200元神券，送价值199元套装，晒单领红包~",
+                "${widget.itemModel.subTitle}",
                 style: TextStyle(
                   color: Colors.black54,
                   fontSize: ScreenAdapter.size(28),
@@ -52,7 +147,7 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
                       children: [
                         Text("价格: "),
                         Text(
-                          "￥2300",
+                          "￥${widget.itemModel.price}",
                           style: TextStyle(
                             color: Colors.red,
                             fontSize: ScreenAdapter.size(48),
@@ -68,7 +163,7 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
                       children: [
                         Text("原价: "),
                         Text(
-                          "￥5000",
+                          "￥${widget.itemModel.oldPrice}",
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: ScreenAdapter.size(28),
@@ -84,11 +179,16 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
             Container(
               margin: EdgeInsets.only(top: 10),
               height: ScreenAdapter.height(100),
-              child: Row(
-                children: [
-                  Text("已选: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("115, 黑色, XL, 1件"),
-                ],
+              child: InkWell(
+                onTap: () {
+                  _showSeletedDetailWidget();
+                },
+                child: Row(
+                  children: [
+                    Text("已选: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("115, 黑色, XL, 1件"),
+                  ],
+                ),
               ),
             ),
             Divider(),

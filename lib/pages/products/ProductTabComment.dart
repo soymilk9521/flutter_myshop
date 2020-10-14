@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/model/ProductContentModel.dart';
 
 class ProductTabCommentPage extends StatefulWidget {
-  ProductTabCommentPage({Key key}) : super(key: key);
+  final ProductContentItemModel itemModel;
+  ProductTabCommentPage(this.itemModel, {Key key}) : super(key: key);
 
   @override
   _ProductTabCommentPageState createState() => _ProductTabCommentPageState();

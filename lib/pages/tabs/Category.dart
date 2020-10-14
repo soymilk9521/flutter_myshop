@@ -31,9 +31,10 @@ class _CategoryPageState extends State<CategoryPage>
     var dio = Dio();
     Response response = await dio.get('${Config.domain}api/pcate');
     CateModel result = CateModel.fromJson(response.data);
-    setState(() {
-      this._leftCateList = result.result;
-    });
+
+    ///setState(() {
+    this._leftCateList = result.result;
+    //});
     // 取得右侧分类数据
     if (this._leftCateList.length > 0) {
       _getRightCateData(this._leftCateList[0].sId);

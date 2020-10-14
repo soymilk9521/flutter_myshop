@@ -60,8 +60,7 @@ class _ProductListPageState extends State<ProductListPage> {
           '${Config.domain}api/plist?search=${args.keywords}&page=${args.page}&sort=${args.sort}&pageSize=${args.pageSize}';
     }
 
-    print("url --> $url");
-    print("args --> $args");
+    print("ProductList --> url --> $url");
     if (args != null) {
       Response response = await dio.get(url);
       ProductModel result = ProductModel.fromJson(response.data);
@@ -103,7 +102,7 @@ class _ProductListPageState extends State<ProductListPage> {
                       context,
                       ProductContentPage.routeName,
                       arguments: ProductContentArguments(
-                        sId: this._productList[index].cid,
+                        sId: this._productList[index].sId,
                       ),
                     );
                   },
