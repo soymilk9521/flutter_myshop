@@ -12,17 +12,47 @@ class ProductTabContentPage extends StatefulWidget {
   _ProductTabContentPageState createState() => _ProductTabContentPageState();
 }
 
-class _ProductTabContentPageState extends State<ProductTabContentPage> {
+class _ProductTabContentPageState extends State<ProductTabContentPage>
+    with AutomaticKeepAliveClientMixin {
   List _attr = [];
+  List _list = [];
+  List _selectedValue = [];
   @override
   void initState() {
     super.initState();
+    this._attr = widget.itemModel.attr;
+    _rebuildDetailData();
+    getSelectedValue();
+  }
+
+  _rebuildDetailData() {
+    for (var i = 0; i < this._attr.length; i++) {
+      List temp = this._attr[i].list.asMap().entries.map((entry) {
+        int idx = entry.key;
+        String title = entry.value;
+        return {"checked": (idx == 0) ? true : false, "title": title};
+      }).toList();
+      this._list.add(temp);
+    }
+  }
+
+  void getSelectedValue() {
     setState(() {
-      this._attr = widget.itemModel.attr;
+      _selectedValue = [];
+    });
+    this._list.forEach((subList) {
+      subList.forEach((element) {
+        if (element["checked"] == true) {
+          setState(() {
+            _selectedValue.add(element["title"]);
+          });
+        }
+      });
     });
   }
 
-  Widget _showAttrItemWidget(Attr item) {
+  Widget _showAttrItemWidget(int index, Attr item, StateSetter myState) {
+    // 数据组装
     return Wrap(
       children: [
         Container(
@@ -34,10 +64,32 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
         Container(
           width: ScreenAdapter.width(1200 / 4 * 3),
           child: Wrap(
-            children: item.list.map((subItem) {
+            children: this._list[index].map<Widget>((subItem) {
               return Container(
                 margin: EdgeInsets.all(ScreenAdapter.width(20)),
-                child: Chip(label: Text("$subItem")),
+                child: InkWell(
+                  onTap: () {
+                    myState(() {
+                      subItem["checked"] = !subItem["checked"];
+                      this._list[index].forEach((element) {
+                        if (element["title"] != subItem["title"]) {
+                          element["checked"] = false;
+                        }
+                      });
+                      getSelectedValue();
+                    });
+                    print("$index ----> ${this._list}");
+                  },
+                  child: Chip(
+                    backgroundColor: subItem["checked"] ? Colors.red : null,
+                    label: Text(
+                      "${subItem['title']}",
+                      style: TextStyle(
+                        color: subItem["checked"] ? Colors.white : null,
+                      ),
+                    ),
+                  ),
+                ),
               );
             }).toList(),
           ),
@@ -50,52 +102,56 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return GestureDetector(
-          child: Stack(
-            children: [
-              ListView(
-                children: [
-                  Column(
-                    children: this._attr.map((item) {
-                      return this._showAttrItemWidget(item);
-                    }).toList(),
-                  ),
-                ],
-              ),
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  height: ScreenAdapter.height(120),
-                  width: ScreenAdapter.width(1200),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: JdButton(
-                          color: Color.fromRGBO(253, 1, 0, 0.9),
-                          text: "加入购物车",
-                          cb: () {
-                            print("加入购物车1");
-                          },
+        return StatefulBuilder(builder: (context, myState) {
+          return GestureDetector(
+            child: Stack(
+              children: [
+                ListView(
+                  children: [
+                    Column(
+                      children: this._attr.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        Attr item = entry.value;
+                        return this._showAttrItemWidget(index, item, myState);
+                      }).toList(),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    height: ScreenAdapter.height(120),
+                    width: ScreenAdapter.width(1200),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: JdButton(
+                            color: Color.fromRGBO(253, 1, 0, 0.9),
+                            text: "加入购物车",
+                            cb: () {
+                              print("加入购物车1");
+                            },
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: JdButton(
-                          color: Color.fromRGBO(255, 165, 0, 0.9),
-                          text: "立即购买",
-                          cb: () {
-                            print("立即购买");
-                          },
+                        Expanded(
+                          flex: 1,
+                          child: JdButton(
+                            color: Color.fromRGBO(255, 165, 0, 0.9),
+                            text: "立即购买",
+                            cb: () {
+                              print("立即购买");
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        });
       },
     );
   }
@@ -186,7 +242,9 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
                 child: Row(
                   children: [
                     Text("已选: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text("115, 黑色, XL, 1件"),
+                    this._selectedValue.length > 0
+                        ? Text("${this._selectedValue.join(',')}")
+                        : Text(""),
                   ],
                 ),
               ),
@@ -205,4 +263,7 @@ class _ProductTabContentPageState extends State<ProductTabContentPage> {
           ],
         ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

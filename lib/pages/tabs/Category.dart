@@ -46,9 +46,11 @@ class _CategoryPageState extends State<CategoryPage>
     var dio = Dio();
     Response response = await dio.get('${Config.domain}api/pcate?pid=$id');
     CateModel result = CateModel.fromJson(response.data);
-    setState(() {
-      this._rightCateList = result.result;
-    });
+    if (mounted) {
+      setState(() {
+        this._rightCateList = result.result;
+      });
+    }
   }
 
   // 渲染左侧分类画面

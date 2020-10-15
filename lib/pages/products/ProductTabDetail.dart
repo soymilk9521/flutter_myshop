@@ -10,7 +10,8 @@ class ProductTabDetailPage extends StatefulWidget {
   _ProductTabDetailPageState createState() => _ProductTabDetailPageState();
 }
 
-class _ProductTabDetailPageState extends State<ProductTabDetailPage> {
+class _ProductTabDetailPageState extends State<ProductTabDetailPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,4 +28,7 @@ class _ProductTabDetailPageState extends State<ProductTabDetailPage> {
       ],
     ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
