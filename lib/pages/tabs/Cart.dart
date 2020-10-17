@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_myshop/model/ProductArguments.dart';
-import 'package:flutter_myshop/pages/ProductList.dart';
-import 'package:flutter_myshop/pages/Search.dart';
+import 'package:flutter_myshop/pages/cart/CartItem.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 
 class CartPage extends StatefulWidget {
@@ -15,27 +13,69 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
-    return Column(
-      children: [
-        RaisedButton(
-          child: Text("Go To Search"),
-          onPressed: () {
-            Navigator.pushNamed(context, SearchPage.routeName);
-          },
-        ),
-        RaisedButton(
-          child: Text("Go To ProductList"),
-          onPressed: () {
-            Navigator.pushNamed(
-              context,
-              ProductListPage.routeName,
-              arguments: ProductArguments(
-                cId: "123456",
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("购物车"),
+        actions: [IconButton(icon: Icon(Icons.launch), onPressed: null)],
+        shadowColor: Colors.white,
+      ),
+      body: Stack(
+        children: [
+          ListView(
+            children: [
+              CartItemWidget(),
+              CartItemWidget(),
+              CartItemWidget(),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            width: ScreenAdapter.width(1200),
+            height: ScreenAdapter.height(120),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    width: 1,
+                    color: Colors.black12,
+                  ),
+                ),
               ),
-            );
-          },
-        ),
-      ],
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      child: Row(
+                        children: [
+                          Checkbox(value: true, onChanged: (val) {}),
+                          Text("全选"),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      child: Container(
+                        width: ScreenAdapter.width(300),
+                        height: ScreenAdapter.height(120),
+                        alignment: Alignment.center,
+                        color: Colors.red,
+                        child:
+                            Text("结算", style: TextStyle(color: Colors.white)),
+                      ),
+                      onTap: () {
+                        print("结算");
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

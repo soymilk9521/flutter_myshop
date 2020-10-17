@@ -7,6 +7,8 @@ import 'package:flutter_myshop/config/Config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_myshop/widget/LoadingWidget.dart';
 
+import '../Search.dart';
+
 class CategoryPage extends StatefulWidget {
   CategoryPage({Key key}) : super(key: key);
 
@@ -177,11 +179,43 @@ class _CategoryPageState extends State<CategoryPage>
         (ScreenAdapter.getScreenWidth() - leftWidth - 10 * 2 - 10 * 2) / 3;
     rightItemWidth = ScreenAdapter.width(rightItemWidth);
     double rightItemHeight = rightItemWidth + ScreenAdapter.height(32);
-    return Row(
-      children: [
-        _leftCateWidget(leftWidth),
-        _rightCateWidget(rightItemWidth, rightItemHeight),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: Icon(Icons.center_focus_weak, color: Colors.black87, size: 28),
+        title: InkWell(
+          child: Container(
+            height: ScreenAdapter.height(76),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(233, 233, 233, 0.8),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            padding: EdgeInsets.only(left: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.search),
+                Text(
+                  "笔记本",
+                  style: TextStyle(fontSize: ScreenAdapter.size(28)),
+                )
+              ],
+            ),
+          ),
+          onTap: () {
+            Navigator.pushNamed(context, SearchPage.routeName);
+          },
+        ),
+        actions: [
+          Icon(Icons.message, color: Colors.black87, size: 28),
+          SizedBox(width: 10)
+        ],
+      ),
+      body: Row(
+        children: [
+          _leftCateWidget(leftWidth),
+          _rightCateWidget(rightItemWidth, rightItemHeight),
+        ],
+      ),
     );
   }
 

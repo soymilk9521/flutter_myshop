@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_myshop/pages/ProductList.dart';
-import 'package:flutter_myshop/pages/products/ProductContent.dart';
 import 'package:flutter_myshop/pages/routes/routes.dart';
 import 'package:flutter_myshop/pages/tabs/Tabs.dart';
+import 'package:flutter_myshop/provider/CartProvider.dart';
+import 'package:provider/provider.dart';
+import 'provider/Counter.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => Counter()),
+      ChangeNotifierProvider(create: (_) => CartProvider()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {

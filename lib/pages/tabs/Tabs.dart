@@ -15,7 +15,7 @@ class Tabs extends StatefulWidget {
 }
 
 class _TabsState extends State<Tabs> {
-  int _currentIndex = 1;
+  int _currentIndex = 2;
   PageController _pageController;
   List<Widget> _pageList = [
     HomePage(),
@@ -33,36 +33,6 @@ class _TabsState extends State<Tabs> {
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     return Scaffold(
-      appBar: AppBar(
-        leading: Icon(Icons.center_focus_weak, color: Colors.black87, size: 28),
-        title: InkWell(
-          child: Container(
-            height: ScreenAdapter.height(76),
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(233, 233, 233, 0.8),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            padding: EdgeInsets.only(left: 10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.search),
-                Text(
-                  "笔记本",
-                  style: TextStyle(fontSize: ScreenAdapter.size(28)),
-                )
-              ],
-            ),
-          ),
-          onTap: () {
-            Navigator.pushNamed(context, SearchPage.routeName);
-          },
-        ),
-        actions: [
-          Icon(Icons.message, color: Colors.black87, size: 28),
-          SizedBox(width: 10)
-        ],
-      ),
       body: PageView(
         children: this._pageList,
         controller: this._pageController,
