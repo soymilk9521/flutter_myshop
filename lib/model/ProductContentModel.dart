@@ -34,23 +34,28 @@ class ProductContentItemModel {
   List<Attr> attr;
   String subTitle;
   int salecount;
+  int count;
+  String selectedVal;
 
-  ProductContentItemModel(
-      {this.sId,
-      this.title,
-      this.cid,
-      this.price,
-      this.oldPrice,
-      this.isBest,
-      this.isHot,
-      this.isNew,
-      this.status,
-      this.pic,
-      this.content,
-      this.cname,
-      this.attr,
-      this.subTitle,
-      this.salecount});
+  ProductContentItemModel({
+    this.sId,
+    this.title,
+    this.cid,
+    this.price,
+    this.oldPrice,
+    this.isBest,
+    this.isHot,
+    this.isNew,
+    this.status,
+    this.pic,
+    this.content,
+    this.cname,
+    this.attr,
+    this.subTitle,
+    this.salecount,
+    this.count,
+    this.selectedVal,
+  });
 
   ProductContentItemModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -65,6 +70,8 @@ class ProductContentItemModel {
     pic = json['pic'];
     content = json['content'];
     cname = json['cname'];
+    count = 1;
+    selectedVal = '';
     if (json['attr'] != null) {
       attr = new List<Attr>();
       json['attr'].forEach((v) {
@@ -94,6 +101,8 @@ class ProductContentItemModel {
     }
     data['sub_title'] = this.subTitle;
     data['salecount'] = this.salecount;
+    data['count'] = this.count;
+    data['selectedVal'] = this.selectedVal;
     return data;
   }
 }

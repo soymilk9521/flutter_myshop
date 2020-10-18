@@ -5,6 +5,7 @@ import 'package:flutter_myshop/model/ProductContentModel.dart';
 import 'package:flutter_myshop/pages/products/ProductTabComment.dart';
 import 'package:flutter_myshop/pages/products/ProductTabContent.dart';
 import 'package:flutter_myshop/pages/products/ProductTabDetail.dart';
+import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/config/Config.dart';
@@ -137,7 +138,7 @@ class _ProductContentPageState extends State<ProductContentPage> {
                               color: Color.fromRGBO(253, 1, 0, 0.9),
                               text: "加入购物车",
                               cb: () {
-                                print("加入购物车1");
+                                eventBus.fire(ProductContentEvent("加入购物车"));
                               },
                             ),
                           ),
@@ -147,7 +148,7 @@ class _ProductContentPageState extends State<ProductContentPage> {
                               color: Color.fromRGBO(255, 165, 0, 0.9),
                               text: "立即购买",
                               cb: () {
-                                print("立即购买");
+                                eventBus.fire(ProductContentEvent("立即购买"));
                               },
                             ),
                           ),
