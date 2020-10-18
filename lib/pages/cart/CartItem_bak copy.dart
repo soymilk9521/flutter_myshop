@@ -45,9 +45,9 @@ class _CartItemWidgetState extends State<CartItemWidget> {
       child: ListView(
         children: cartProvider.cartItems().map((CartModel model) {
           return ListTile(
-            title: model.title,
+            title: CartModel.title().titleWidget,
             trailing: InkWell(
-              child: model.icon,
+              child: model.iconWidget,
               onTap: () {
                 if (model.function != null) {
                   model.function(model);

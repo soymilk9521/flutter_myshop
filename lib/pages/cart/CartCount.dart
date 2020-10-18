@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/model/CartModel.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 
 class CartCountWidget extends StatefulWidget {
-  CartCountWidget({Key key}) : super(key: key);
+  final CartModel item;
+  CartCountWidget(this.item, {Key key}) : super(key: key);
 
   @override
   _CartCountWidgetState createState() => _CartCountWidgetState();
 }
 
 class _CartCountWidgetState extends State<CartCountWidget> {
+  CartModel item;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      item = widget.item;
+    });
+  }
+
   Widget _leftBtnWidget() {
     return InkWell(
       child: Container(
@@ -47,7 +58,7 @@ class _CartCountWidgetState extends State<CartCountWidget> {
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.black12),
       ),
-      child: Text("9"),
+      child: Text("${item.count}"),
     );
   }
 

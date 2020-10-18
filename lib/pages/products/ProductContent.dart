@@ -5,11 +5,14 @@ import 'package:flutter_myshop/model/ProductContentModel.dart';
 import 'package:flutter_myshop/pages/products/ProductTabComment.dart';
 import 'package:flutter_myshop/pages/products/ProductTabContent.dart';
 import 'package:flutter_myshop/pages/products/ProductTabDetail.dart';
+import 'package:flutter_myshop/provider/CartProvider.dart';
+import 'package:flutter_myshop/services/CartService.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/widget/LoadingWidget.dart';
+import 'package:provider/provider.dart';
 
 class ProductContentPage extends StatefulWidget {
   static const routeName = "/productContent";
@@ -21,6 +24,7 @@ class ProductContentPage extends StatefulWidget {
 }
 
 class _ProductContentPageState extends State<ProductContentPage> {
+  CartProvider cartProvider;
   @override
   void initState() {
     super.initState();
@@ -45,6 +49,7 @@ class _ProductContentPageState extends State<ProductContentPage> {
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
+    this.cartProvider = Provider.of<CartProvider>(context);
     // ProductContentArguments args = ModalRoute.of(context).settings.arguments;
     return DefaultTabController(
       length: 3,
@@ -137,8 +142,14 @@ class _ProductContentPageState extends State<ProductContentPage> {
                             child: JdButton(
                               color: Color.fromRGBO(253, 1, 0, 0.9),
                               text: "加入购物车",
-                              cb: () {
-                                eventBus.fire(ProductContentEvent("加入购物车"));
+                              cb: () async {
+                                if (this._itemModel.attr.length > 0) {
+                                  eventBus.fire(ProductContentEvent("加入购物车"));
+                                } else {
+                                  await CartService.addCart(this._itemModel);
+                                  Navigator.pop(context);
+                                  this.cartProvider.updateData();
+                                }
                               },
                             ),
                           ),
@@ -148,6 +159,7 @@ class _ProductContentPageState extends State<ProductContentPage> {
                               color: Color.fromRGBO(255, 165, 0, 0.9),
                               text: "立即购买",
                               cb: () {
+                                print("立即购买");
                                 eventBus.fire(ProductContentEvent("立即购买"));
                               },
                             ),

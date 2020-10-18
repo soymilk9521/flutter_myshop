@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/ProductContentModel.dart';
 import 'package:flutter_myshop/pages/products/ProductCount.dart';
+import 'package:flutter_myshop/provider/CartProvider.dart';
 import 'package:flutter_myshop/services/CartService.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
+import 'package:provider/provider.dart';
 
 class ProductTabContentPage extends StatefulWidget {
   final ProductContentItemModel itemModel;
@@ -23,6 +25,7 @@ class _ProductTabContentPageState extends State<ProductTabContentPage>
   List _list = [];
   List _selectedValue = [];
   StreamSubscription<ProductContentEvent> sspBus;
+  CartProvider cartProvider;
 
   @override
   void initState() {
@@ -164,9 +167,10 @@ class _ProductTabContentPageState extends State<ProductTabContentPage>
                           child: JdButton(
                             color: Color.fromRGBO(253, 1, 0, 0.9),
                             text: "加入购物车",
-                            cb: () {
-                              CartService.addCart(widget.itemModel);
+                            cb: () async {
+                              await CartService.addCart(widget.itemModel);
                               Navigator.pop(context);
+                              this.cartProvider.updateData();
                             },
                           ),
                         ),
@@ -195,6 +199,7 @@ class _ProductTabContentPageState extends State<ProductTabContentPage>
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
+    this.cartProvider = Provider.of<CartProvider>(context);
     String pic = "${widget.itemModel.pic}";
     pic = Config.domain + pic.replaceAll('\\', '/');
     print("ProductTabContent --> pic --> $pic");

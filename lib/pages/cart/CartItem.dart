@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/model/CartModel.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
-
 import 'CartCount.dart';
 
 class CartItemWidget extends StatefulWidget {
-  CartItemWidget({Key key}) : super(key: key);
+  final CartModel item;
+  CartItemWidget(this.item, {Key key}) : super(key: key);
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
 }
 
 class _CartItemWidgetState extends State<CartItemWidget> {
+  CartModel item;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      item = widget.item;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
@@ -25,16 +35,18 @@ class _CartItemWidgetState extends State<CartItemWidget> {
         children: [
           Container(
             child: Checkbox(
-              value: true,
+              value: item.checked,
               onChanged: (val) {
-                print("checked");
+                setState(() {
+                  item.checked = val;
+                });
               },
               activeColor: Colors.pink,
             ),
           ),
           Container(
             child: Image.network(
-              "http://jd.itying.com/public/upload/Hfe1i8QDOkfVt-PuGcxCA0fs.jpg",
+              "${item.pic}",
               fit: BoxFit.cover,
             ),
           ),
@@ -44,9 +56,15 @@ class _CartItemWidgetState extends State<CartItemWidget> {
               padding: EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "七匹狼长袖衬衫男士2020秋季新品商务休闲翻领舒适衬衣男装职业装衬衫男寸衫衣服上衣 003(中灰)",
+                    "${item.title}",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    "${item.selectedVal}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -55,13 +73,13 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "￥6500",
+                          "￥${item.price}",
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: CartCountWidget(),
+                        child: CartCountWidget(item),
                       )
                     ],
                   )
