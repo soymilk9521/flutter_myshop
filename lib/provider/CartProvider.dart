@@ -19,7 +19,7 @@ class CartProvider with ChangeNotifier, DiagnosticableTreeMixin {
 
   List<CartModel> cartItems() => this._cartItem;
 
-  initData() async {
+  void initData() async {
     try {
       this._cartItem = [];
       result = json.decode(await Storage.getString(CartService.CARTLIST));
@@ -33,8 +33,19 @@ class CartProvider with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  updateData() {
+  void updateData() {
     initData();
+  }
+
+  void changeItem() async {
+    result = this._cartItem.map((e) => e.toJson()).toList();
+    print("CartService ---> 购物车未添加该商品时 ---> $result");
+    await Storage.setString(CartService.CARTLIST, json.encode(result));
+    notifyListeners();
+  }
+
+  bool isCheckAll() {
+    return this._cartItem.every((element) => element.checked);
   }
 
   @override

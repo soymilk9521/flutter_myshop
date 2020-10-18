@@ -12,10 +12,11 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  CartProvider cartProvider;
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
+    cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("购物车"),
@@ -25,11 +26,14 @@ class _CartPageState extends State<CartPage> {
       body: cartProvider.cartCount() > 0
           ? Stack(
               children: [
-                ListView(
-                  children: cartProvider
-                      .cartItems()
-                      .map((e) => CartItemWidget(e))
-                      .toList(),
+                Container(
+                  margin: EdgeInsets.only(bottom: ScreenAdapter.height(120)),
+                  child: ListView(
+                    children: cartProvider
+                        .cartItems()
+                        .map((e) => CartItemWidget(e))
+                        .toList(),
+                  ),
                 ),
                 Positioned(
                   bottom: 0,
@@ -43,6 +47,7 @@ class _CartPageState extends State<CartPage> {
                           color: Colors.black12,
                         ),
                       ),
+                      color: Colors.white,
                     ),
                     child: Stack(
                       children: [
@@ -51,7 +56,11 @@ class _CartPageState extends State<CartPage> {
                           child: Container(
                             child: Row(
                               children: [
-                                Checkbox(value: true, onChanged: (val) {}),
+                                Checkbox(
+                                  value: cartProvider.isCheckAll(),
+                                  activeColor: Colors.pink,
+                                  onChanged: (val) {},
+                                ),
                                 Text("全选"),
                               ],
                             ),

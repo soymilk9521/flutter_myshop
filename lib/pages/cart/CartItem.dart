@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/model/CartModel.dart';
+import 'package:flutter_myshop/provider/CartProvider.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
+import 'package:provider/provider.dart';
 import 'CartCount.dart';
 
 class CartItemWidget extends StatefulWidget {
@@ -13,6 +15,7 @@ class CartItemWidget extends StatefulWidget {
 
 class _CartItemWidgetState extends State<CartItemWidget> {
   CartModel item;
+  CartProvider cartProvider;
   @override
   void initState() {
     super.initState();
@@ -24,6 +27,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
+    cartProvider = Provider.of<CartProvider>(context);
     return Container(
       padding: EdgeInsets.all(5),
       width: ScreenAdapter.width(1200),
@@ -39,6 +43,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
               onChanged: (val) {
                 setState(() {
                   item.checked = val;
+                  cartProvider.changeItem();
                 });
               },
               activeColor: Colors.pink,
