@@ -10,6 +10,7 @@ import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProductTabContentPage extends StatefulWidget {
   final ProductContentItemModel itemModel;
@@ -171,6 +172,14 @@ class _ProductTabContentPageState extends State<ProductTabContentPage>
                               await CartService.addCart(widget.itemModel);
                               Navigator.pop(context);
                               this.cartProvider.updateData();
+                              Fluttertoast.showToast(
+                                  msg: "购物车添加成功!",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.pink,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
                             },
                           ),
                         ),

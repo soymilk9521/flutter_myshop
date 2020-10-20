@@ -3,12 +3,14 @@ import 'package:flutter_myshop/model/ProductContentArguments.dart';
 import 'package:flutter_myshop/pages/ProductList.dart';
 import 'package:flutter_myshop/pages/Search.dart';
 import 'package:flutter_myshop/pages/products/ProductContent.dart';
+import 'package:flutter_myshop/pages/tabs/Cart.dart';
 import 'package:flutter_myshop/pages/tabs/Tabs.dart';
 import 'package:flutter/material.dart';
 
 final routes = {
   Tabs.root: (context) => Tabs(),
   SearchPage.routeName: (context) => SearchPage(),
+  CartPage.routeName: (context) => CartPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {

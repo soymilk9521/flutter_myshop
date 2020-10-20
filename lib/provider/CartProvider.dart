@@ -39,13 +39,40 @@ class CartProvider with ChangeNotifier, DiagnosticableTreeMixin {
 
   void changeItem() async {
     result = this._cartItem.map((e) => e.toJson()).toList();
-    print("CartService ---> 购物车未添加该商品时 ---> $result");
+    print("CartProvider ---> changeItem ---> $result");
+    await Storage.setString(CartService.CARTLIST, json.encode(result));
+    notifyListeners();
+  }
+
+  void deleteItem() async {
+    this._cartItem.removeWhere((element) => element.checked);
+    result = this._cartItem.map((e) => e.toJson()).toList();
+    print("CartProvider ---> deleteItem ---> $result");
     await Storage.setString(CartService.CARTLIST, json.encode(result));
     notifyListeners();
   }
 
   bool isCheckAll() {
     return this._cartItem.every((element) => element.checked);
+  }
+
+  void checkAll(value) async {
+    print("----> $value");
+    this._cartItem.forEach((element) => element.checked = value);
+    result = this._cartItem.map((e) => e.toJson()).toList();
+    print("CartProvider ---> checkAll ---> $result");
+    await Storage.setString(CartService.CARTLIST, json.encode(result));
+    notifyListeners();
+  }
+
+  double totalPrice() {
+    double total = 0;
+    this._cartItem.forEach((element) {
+      if (element.checked) {
+        total += element.count * element.price;
+      }
+    });
+    return total;
   }
 
   @override

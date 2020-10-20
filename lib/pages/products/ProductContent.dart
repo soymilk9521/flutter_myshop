@@ -5,6 +5,7 @@ import 'package:flutter_myshop/model/ProductContentModel.dart';
 import 'package:flutter_myshop/pages/products/ProductTabComment.dart';
 import 'package:flutter_myshop/pages/products/ProductTabContent.dart';
 import 'package:flutter_myshop/pages/products/ProductTabDetail.dart';
+import 'package:flutter_myshop/pages/tabs/Cart.dart';
 import 'package:flutter_myshop/provider/CartProvider.dart';
 import 'package:flutter_myshop/services/CartService.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/widget/LoadingWidget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class ProductContentPage extends StatefulWidget {
@@ -130,11 +132,17 @@ class _ProductContentPageState extends State<ProductContentPage> {
                             padding: EdgeInsets.all(ScreenAdapter.height(10)),
                             width: ScreenAdapter.width(120),
                             height: ScreenAdapter.height(120),
-                            child: Column(
-                              children: [
-                                Icon(Icons.shopping_cart, size: 30),
-                                Text("购物车"),
-                              ],
+                            child: InkWell(
+                              child: Column(
+                                children: [
+                                  Icon(Icons.shopping_cart, size: 30),
+                                  Text("购物车"),
+                                ],
+                              ),
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, CartPage.routeName);
+                              },
                             ),
                           ),
                           Expanded(
@@ -149,6 +157,14 @@ class _ProductContentPageState extends State<ProductContentPage> {
                                   await CartService.addCart(this._itemModel);
                                   Navigator.pop(context);
                                   this.cartProvider.updateData();
+                                  Fluttertoast.showToast(
+                                      msg: "购物车添加成功!",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.pink,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
                                 }
                               },
                             ),

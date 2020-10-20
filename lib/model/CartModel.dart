@@ -4,7 +4,7 @@ class CartModel {
   String sId;
   String title;
   String cid;
-  Object price;
+  double price;
   String selectedVal;
   int count;
   String pic;

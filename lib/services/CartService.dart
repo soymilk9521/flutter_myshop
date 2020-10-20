@@ -57,7 +57,13 @@ class CartService {
     data['_id'] = itemModel.sId;
     data['title'] = itemModel.title;
     data['cid'] = itemModel.cid;
-    data['price'] = itemModel.price;
+    if (itemModel.price is String) {
+      data['price'] = double.parse(itemModel.price);
+    } else if (itemModel.price is int) {
+      data['price'] = double.parse(itemModel.price.toString());
+    } else {
+      data['price'] = itemModel.price;
+    }
     data['selectedVal'] = itemModel.selectedVal;
     data['count'] = itemModel.count;
     data['pic'] = pic;
