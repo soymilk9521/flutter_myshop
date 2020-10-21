@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/login/Login.dart';
 import 'package:flutter_myshop/pages/routes/routes.dart';
 import 'package:flutter_myshop/pages/tabs/Tabs.dart';
 import 'package:flutter_myshop/provider/CartProvider.dart';
@@ -26,8 +27,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      //initialRoute: ProductContentPage.routeName,
-      initialRoute: Tabs.root,
+      initialRoute: LoginPage.routeName,
+      // initialRoute: Tabs.root,
       routes: routes,
       onGenerateRoute: onGenerateRoute,
       debugShowCheckedModeBanner: false,

@@ -1,3 +1,4 @@
+import 'package:flutter_myshop/login/Login.dart';
 import 'package:flutter_myshop/model/ProductArguments.dart';
 import 'package:flutter_myshop/model/ProductContentArguments.dart';
 import 'package:flutter_myshop/pages/ProductList.dart';
@@ -11,6 +12,7 @@ final routes = {
   Tabs.root: (context) => Tabs(),
   SearchPage.routeName: (context) => SearchPage(),
   CartPage.routeName: (context) => CartPage(),
+  LoginPage.routeName: (context) => LoginPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {
