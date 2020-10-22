@@ -118,7 +118,7 @@ class _ProductContentPageState extends State<ProductContentPage> {
                   Positioned(
                     bottom: 0,
                     width: ScreenAdapter.getScreenWidth(),
-                    height: ScreenAdapter.height(120),
+                    height: ScreenAdapter.height(130),
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(

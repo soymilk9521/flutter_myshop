@@ -26,7 +26,10 @@ class JdButton extends StatelessWidget {
         child: Center(
           child: Text(
             this.text,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: ScreenAdapter.size(36),
+            ),
           ),
         ),
       ),

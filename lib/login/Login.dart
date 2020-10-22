@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/login/RegisterFirst.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
@@ -68,7 +69,9 @@ class _LoginPageState extends State<LoginPage> {
                 alignment: Alignment.centerRight,
                 child: FlatButton(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, RegisterFirstPage.routeName);
+                  },
                   child: Text("新用户注册"),
                 ),
               )
@@ -82,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
             cb: () {
               print("登录");
             },
-          )
+          ),
         ],
       ),
     );
