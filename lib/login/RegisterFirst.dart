@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_myshop/model/RegisterArguments.dart';
+import 'package:flutter_myshop/services/RegisterService.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
 
@@ -14,7 +16,7 @@ class RegisterFirstPage extends StatefulWidget {
 }
 
 class _RegisterFirstPageState extends State<RegisterFirstPage> {
-  String _number;
+  String _number = "";
 
   Widget _getIconWidget() {
     return DropdownButton(
@@ -57,11 +59,21 @@ class _RegisterFirstPageState extends State<RegisterFirstPage> {
             SizedBox(height: 10),
             JdButton(
               text: "下一步",
-              color:
-                  ["", null].contains(this._number) ? Colors.grey : Colors.red,
-              cb: () {
-                Navigator.pushNamed(context, RegisterSecondPage.routeName);
-              },
+              color: RegisterService.checkNumber(this._number)
+                  ? Colors.red
+                  : Colors.grey,
+              cb: RegisterService.checkNumber(this._number)
+                  ? () {
+                      Navigator.pushNamed(
+                        context,
+                        RegisterSecondPage.routeName,
+                        arguments: RegisterArguments(
+                          number: this._number,
+                          code: "1120",
+                        ),
+                      );
+                    }
+                  : null,
             ),
           ],
         ),

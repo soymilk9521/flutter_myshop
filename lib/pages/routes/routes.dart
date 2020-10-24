@@ -4,6 +4,7 @@ import 'package:flutter_myshop/login/RegisterSecond.dart';
 import 'package:flutter_myshop/login/RegisterThird.dart';
 import 'package:flutter_myshop/model/ProductArguments.dart';
 import 'package:flutter_myshop/model/ProductContentArguments.dart';
+import 'package:flutter_myshop/model/RegisterArguments.dart';
 import 'package:flutter_myshop/pages/ProductList.dart';
 import 'package:flutter_myshop/pages/Search.dart';
 import 'package:flutter_myshop/pages/products/ProductContent.dart';
@@ -17,7 +18,6 @@ final routes = {
   CartPage.routeName: (context) => CartPage(),
   LoginPage.routeName: (context) => LoginPage(),
   RegisterFirstPage.routeName: (context) => RegisterFirstPage(),
-  RegisterSecondPage.routeName: (context) => RegisterSecondPage(),
   RegisterThirdPage.routeName: (context) => RegisterThirdPage(),
 };
 
@@ -36,6 +36,15 @@ var onGenerateRoute = (RouteSettings settings) {
     return MaterialPageRoute(
       builder: (context) {
         return ProductContentPage(
+          arguments: arguments,
+        );
+      },
+    );
+  } else if (settings.name == RegisterSecondPage.routeName) {
+    final RegisterArguments arguments = settings.arguments;
+    return MaterialPageRoute(
+      builder: (context) {
+        return RegisterSecondPage(
           arguments: arguments,
         );
       },
