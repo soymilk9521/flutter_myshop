@@ -1,8 +1,16 @@
+import 'package:dio/dio.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/login/RegisterFirst.dart';
+import 'package:flutter_myshop/pages/tabs/Tabs.dart';
+import 'package:flutter_myshop/services/EventBus.dart';
+import 'package:flutter_myshop/services/RegisterService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = "/login";
@@ -14,6 +22,47 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String _username;
+  String _password;
+
+  void _login() async {
+    if (!["", null].contains(this._password) &&
+        !["", null].contains(this._username)) {
+      String url = "${Config.domain}api/doLogin";
+      Dio requet = Dio();
+
+      Map data = {
+        "username": this._username,
+        "password": this._password,
+      };
+      var result = await requet.post(url, data: data);
+      print("login ---> login ---> $result");
+      if (result.data["success"]) {
+        RegisterService.setUserInfo(result.data);
+        Navigator.pop(context);
+        eventBus.fire(LoginEvent("登录成功!"));
+      } else {
+        Fluttertoast.showToast(
+            msg: "${result.data["success"]}",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.pink,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    } else {
+      Fluttertoast.showToast(
+          msg: "用户名或密码不能为空!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.pink,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
@@ -43,16 +92,22 @@ class _LoginPageState extends State<LoginPage> {
           JdText(
             text: "用户名/手机号",
             onChanged: (value) {
-              print(value);
+              this._username = value;
             },
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp("[ZA-ZZa-z0-9]"))
+            ],
           ),
           SizedBox(height: 10),
           JdText(
             text: "请输入密码",
             password: true,
             onChanged: (value) {
-              print(value);
+              this._password = value;
             },
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp("[ZA-ZZa-z0-9_#-]+")),
+            ],
           ),
           SizedBox(height: 10),
           Stack(
@@ -82,9 +137,7 @@ class _LoginPageState extends State<LoginPage> {
             text: "登录",
             height: 80,
             color: Colors.red,
-            cb: () {
-              print("登录");
-            },
+            cb: this._login,
           ),
         ],
       ),

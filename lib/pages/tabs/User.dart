@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/login/Login.dart';
+import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/RegisterService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
+import 'package:flutter_myshop/widget/JdButton.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -12,6 +16,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   List _userInfo = [];
+  StreamSubscription<LoginEvent> bus;
   @override
   void initState() {
     super.initState();
@@ -21,6 +26,21 @@ class _UserPageState extends State<UserPage> {
         _userInfo = value;
       });
     });
+
+    bus = eventBus.on<LoginEvent>().listen((event) {
+      print("user --> event --> ${event.result}");
+      RegisterService.getUserInfo().then((value) {
+        setState(() {
+          _userInfo = value;
+        });
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    bus.cancel();
   }
 
   @override
@@ -124,6 +144,18 @@ class _UserPageState extends State<UserPage> {
             title: Text("在线客服"),
           ),
           Divider(),
+          SizedBox(height: 100),
+          _userInfo.length > 0
+              ? JdButton(
+                  text: "退出登录",
+                  color: Colors.red,
+                  cb: () {
+                    print("退出登录");
+                    RegisterService.removeUserInfo();
+                    eventBus.fire(LoginEvent("退出成功!"));
+                  },
+                )
+              : Text(""),
         ],
       ),
     );

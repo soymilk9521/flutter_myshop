@@ -15,12 +15,17 @@ class RegisterService {
   }
 
   static Future<List> getUserInfo() async {
-    List userInfo = json.decode(await Storage.getString(USERINFO));
-    print("register ---> getUserInfo ---> $userInfo");
-    return userInfo;
+    try {
+      List userInfo = json.decode(await Storage.getString(USERINFO));
+      print("register ---> getUserInfo ---> $userInfo");
+      return userInfo;
+    } catch (e) {
+      return [];
+    }
   }
 
   static Future<void> removeUserInfo() async {
     await Storage.remove(USERINFO);
+    print("register ---> removeUserInfo ---> 退出登录");
   }
 }

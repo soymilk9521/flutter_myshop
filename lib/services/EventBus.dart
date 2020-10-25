@@ -6,3 +6,8 @@ class ProductContentEvent {
   String result;
   ProductContentEvent(this.result);
 }
+
+class LoginEvent {
+  String result;
+  LoginEvent(this.result);
+}
