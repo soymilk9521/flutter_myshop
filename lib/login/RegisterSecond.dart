@@ -1,13 +1,14 @@
 import 'dart:async';
-import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/RegisterArguments.dart';
-import 'package:flutter_myshop/services/RegisterService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'RegisterThird.dart';
 
@@ -23,49 +24,73 @@ class RegisterSecondPage extends StatefulWidget {
 class _RegisterSecondPageState extends State<RegisterSecondPage> {
   Timer _timer;
   String _code = "";
-  int _maxCount = 60;
   int _countdownTime = 0;
+  int _maxCountTime = 10;
+  RegisterArguments _arguments;
+
   @override
   void initState() {
     super.initState();
     setState(() {
-      this._countdownTime = this._maxCount;
+      this._countdownTime = this._maxCountTime;
+      this._arguments = widget.arguments;
     });
     //开始倒计时
     this._startCountdownTimer();
   }
 
+  // 倒计时
   void _startCountdownTimer() {
     const oneSec = const Duration(seconds: 1);
-    var callback = (timer) => {
-          setState(() {
-            if (_countdownTime < 1) {
-              _timer.cancel();
-            } else {
-              _countdownTime--;
-              print("---->$_countdownTime");
-            }
-          })
-        };
-    _timer = Timer.periodic(oneSec, callback);
+    _timer = Timer.periodic(oneSec, (timer) {
+      setState(() {
+        this._countdownTime--;
+        if (_countdownTime == 0) {
+          timer.cancel();
+        }
+        print("---->$_countdownTime");
+      });
+    });
   }
 
-  bool _checkCode() {
-    return RegisterService.checkCode(widget.arguments.code, this._code) &&
-        _countdownTime != 0;
+  // 验证码校验
+  bool _checkCode() =>
+      RegExp(r"[a-zA-Z0-9]{4}$").hasMatch(this._code) &&
+      this._code == widget.arguments.code;
+
+  // 倒计时校验
+  bool _checkTimer() => this._countdownTime == 0;
+
+  // 重新获取验证码
+  Future<void> _getValidationCode() async {
+    String url = "${Config.domain}api/sendCode";
+    Dio requet = Dio();
+    Map data = {"tel": widget.arguments.number};
+    var result = await requet.post(url, data: data);
+    setState(() {
+      _arguments = RegisterArguments.fromJson(result.data);
+      _arguments.number = widget.arguments.number;
+      widget.arguments.code = this._arguments.code;
+    });
   }
 
-  String _getValitionCode() {
-    const String alphabet =
-        '0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
-    int strlenght = 4;
-
-    /// 生成的字符串固定长度
-    String tempcode = '';
-    for (var i = 0; i < strlenght; i++) {
-      tempcode = tempcode + alphabet[Random().nextInt(alphabet.length)];
+  Future<bool> _checkValidationCode() async {
+    String url = "${Config.domain}api/validateCode";
+    Dio requet = Dio();
+    Map data = {"tel": widget.arguments.number, "code": this._code};
+    var result = await requet.post(url, data: data);
+    if (!result.data["success"]) {
+      Fluttertoast.showToast(
+          msg: "${result.data['message']}!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.pink,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return false;
     }
-    return tempcode;
+    return true;
   }
 
   @override
@@ -104,9 +129,6 @@ class _RegisterSecondPageState extends State<RegisterSecondPage> {
                       setState(() {
                         this._code = value;
                       });
-                      if (this._checkCode()) {
-                        this._timer.cancel();
-                      }
                     },
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
@@ -120,24 +142,22 @@ class _RegisterSecondPageState extends State<RegisterSecondPage> {
                     alignment: Alignment.center,
                     height: ScreenAdapter.height(100),
                     width: ScreenAdapter.width(350),
-                    color:
-                        this._checkCode() ? Colors.green[200] : Colors.black26,
-                    child: this._checkCode()
-                        ? Text("验证成功")
-                        : Text("重新发送(${this._countdownTime})"),
+                    color: Colors.black26,
+                    child: this._checkTimer()
+                        ? Text("重新发送")
+                        : Text("${this._countdownTime}s"),
                   ),
-                  onTap: this._checkCode()
-                      ? null
-                      : () {
-                          if (_countdownTime == 0) {
-                            setState(() {
-                              this._countdownTime = this._maxCount;
-                              widget.arguments.code = this._getValitionCode();
-                            });
-                            //开始倒计时
-                            this._startCountdownTimer();
-                          }
-                        },
+                  onTap: this._checkTimer()
+                      ? () async {
+                          setState(() {
+                            this._countdownTime = this._maxCountTime;
+                          });
+                          // 获取验证码
+                          await this._getValidationCode();
+                          // 开启倒计时
+                          this._startCountdownTimer();
+                        }
+                      : null,
                 ),
               ],
             ),
@@ -146,8 +166,16 @@ class _RegisterSecondPageState extends State<RegisterSecondPage> {
               text: "下一步",
               color: this._checkCode() ? Colors.red : Colors.grey,
               cb: this._checkCode()
-                  ? () {
-                      Navigator.pushNamed(context, RegisterThirdPage.routeName);
+                  ? () async {
+                      var success = await _checkValidationCode();
+                      print(this._arguments);
+                      if (success) {
+                        Navigator.pushNamed(
+                          context,
+                          RegisterThirdPage.routeName,
+                          arguments: this._arguments,
+                        );
+                      }
                     }
                   : null,
             ),

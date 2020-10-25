@@ -1,9 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/RegisterArguments.dart';
 import 'package:flutter_myshop/services/RegisterService.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'RegisterSecond.dart';
 
@@ -17,8 +20,20 @@ class RegisterFirstPage extends StatefulWidget {
 
 class _RegisterFirstPageState extends State<RegisterFirstPage> {
   String _number = "";
+  RegisterArguments _arguments;
 
-  Widget _getIconWidget() {
+  Future<void> _getValidationCode() async {
+    String url = "${Config.domain}api/sendCode";
+    Dio requet = Dio();
+    Map data = {"tel": this._number};
+    var result = await requet.post(url, data: data);
+    setState(() {
+      _arguments = RegisterArguments.fromJson(result.data);
+      _arguments.number = this._number;
+    });
+  }
+
+  Widget _getTelCodeWidget() {
     return DropdownButton(
       underline: Container(height: 0), // 隐藏下划线
       items: [
@@ -45,12 +60,11 @@ class _RegisterFirstPageState extends State<RegisterFirstPage> {
             JdText(
               text: "请输入手机号码",
               onChanged: (value) {
-                print(value);
                 setState(() {
                   this._number = value;
                 });
               },
-              icon: this._getIconWidget(),
+              icon: this._getTelCodeWidget(),
               inputFormatters: [
                 WhitelistingTextInputFormatter.digitsOnly,
               ], //只允许输入数字
@@ -63,15 +77,24 @@ class _RegisterFirstPageState extends State<RegisterFirstPage> {
                   ? Colors.red
                   : Colors.grey,
               cb: RegisterService.checkNumber(this._number)
-                  ? () {
-                      Navigator.pushNamed(
-                        context,
-                        RegisterSecondPage.routeName,
-                        arguments: RegisterArguments(
-                          number: this._number,
-                          code: "1120",
-                        ),
-                      );
+                  ? () async {
+                      await _getValidationCode();
+                      if (this._arguments != null && this._arguments.success) {
+                        Navigator.pushNamed(
+                          context,
+                          RegisterSecondPage.routeName,
+                          arguments: this._arguments,
+                        );
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "${this._arguments.message}!",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.pink,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
                     }
                   : null,
             ),

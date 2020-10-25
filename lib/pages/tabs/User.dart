@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/login/Login.dart';
+import 'package:flutter_myshop/services/RegisterService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 
 class UserPage extends StatefulWidget {
@@ -10,6 +11,18 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  List _userInfo = [];
+  @override
+  void initState() {
+    super.initState();
+    RegisterService.getUserInfo().then((value) {
+      print("user ---> init ---> $value");
+      setState(() {
+        _userInfo = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
@@ -40,43 +53,44 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Expanded(
                   flex: 1,
-                  child: InkWell(
-                    child: Container(
-                      child: Text(
-                        "登录/注册",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: ScreenAdapter.size(36),
+                  child: (this._userInfo.length == 0)
+                      ? InkWell(
+                          child: Container(
+                            child: Text(
+                              "登录/注册",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenAdapter.size(36),
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(context, LoginPage.routeName);
+                          },
+                        )
+                      : Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "用户名：${this._userInfo[0]['username']}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: ScreenAdapter.size(36),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "普通会员",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: ScreenAdapter.size(24),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, LoginPage.routeName);
-                    },
-                  ),
-                  // child: Container(
-                  //   child: Column(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Text(
-                  //         "用户名：15555555556",
-                  //         style: TextStyle(
-                  //           color: Colors.white,
-                  //           fontSize: ScreenAdapter.size(36),
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: 10),
-                  //       Text(
-                  //         "普通会员",
-                  //         style: TextStyle(
-                  //           color: Colors.white,
-                  //           fontSize: ScreenAdapter.size(24),
-                  //         ),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
                 )
               ],
             ),

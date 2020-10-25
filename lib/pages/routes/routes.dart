@@ -18,7 +18,6 @@ final routes = {
   CartPage.routeName: (context) => CartPage(),
   LoginPage.routeName: (context) => LoginPage(),
   RegisterFirstPage.routeName: (context) => RegisterFirstPage(),
-  RegisterThirdPage.routeName: (context) => RegisterThirdPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {
@@ -45,6 +44,15 @@ var onGenerateRoute = (RouteSettings settings) {
     return MaterialPageRoute(
       builder: (context) {
         return RegisterSecondPage(
+          arguments: arguments,
+        );
+      },
+    );
+  } else if (settings.name == RegisterThirdPage.routeName) {
+    final RegisterArguments arguments = settings.arguments;
+    return MaterialPageRoute(
+      builder: (context) {
+        return RegisterThirdPage(
           arguments: arguments,
         );
       },
