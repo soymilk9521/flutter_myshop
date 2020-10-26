@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_myshop/login/Login.dart';
 import 'package:flutter_myshop/pages/routes/routes.dart';
 import 'package:flutter_myshop/pages/tabs/Tabs.dart';
 import 'package:flutter_myshop/provider/CartProvider.dart';
+import 'package:flutter_myshop/provider/CheckOutProvider.dart';
 import 'package:provider/provider.dart';
 import 'provider/Counter.dart';
 
@@ -11,6 +11,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (_) => Counter()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => CheckOutProvider()),
     ],
     child: MyApp(),
   ));

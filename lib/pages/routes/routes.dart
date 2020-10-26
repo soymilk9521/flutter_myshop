@@ -5,6 +5,7 @@ import 'package:flutter_myshop/login/RegisterThird.dart';
 import 'package:flutter_myshop/model/ProductArguments.dart';
 import 'package:flutter_myshop/model/ProductContentArguments.dart';
 import 'package:flutter_myshop/model/RegisterArguments.dart';
+import 'package:flutter_myshop/pages/CheckOut.dart';
 import 'package:flutter_myshop/pages/ProductList.dart';
 import 'package:flutter_myshop/pages/Search.dart';
 import 'package:flutter_myshop/pages/products/ProductContent.dart';
@@ -18,6 +19,7 @@ final routes = {
   CartPage.routeName: (context) => CartPage(),
   LoginPage.routeName: (context) => LoginPage(),
   RegisterFirstPage.routeName: (context) => RegisterFirstPage(),
+  CheckOutPage.routeName: (context) => CheckOutPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {

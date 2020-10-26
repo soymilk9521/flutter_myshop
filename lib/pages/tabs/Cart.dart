@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/pages/CheckOut.dart';
 import 'package:flutter_myshop/pages/cart/CartItem.dart';
 import 'package:flutter_myshop/provider/CartProvider.dart';
+import 'package:flutter_myshop/provider/CheckOutProvider.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -15,11 +17,13 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   CartProvider cartProvider;
+  CheckOutProvider checkOutProvider;
   bool _flag = true;
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     cartProvider = Provider.of<CartProvider>(context);
+    checkOutProvider = Provider.of<CheckOutProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("购物车"),
@@ -105,6 +109,9 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   onTap: () {
                                     print("结算");
+                                    Navigator.pushNamed(
+                                        context, CheckOutPage.routeName);
+                                    checkOutProvider.getcheckOutItem();
                                   },
                                 )
                               : InkWell(
