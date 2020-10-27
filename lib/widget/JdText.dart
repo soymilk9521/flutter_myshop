@@ -9,6 +9,8 @@ class JdText extends StatelessWidget {
   final Widget icon;
   final List<TextInputFormatter> inputFormatters;
   final Border border;
+  final int maxLines;
+  final double height;
   const JdText({
     Key key,
     this.text = "请输入",
@@ -19,6 +21,8 @@ class JdText extends StatelessWidget {
     this.border = const Border(
       bottom: BorderSide(width: 1, color: Colors.black26),
     ),
+    this.maxLines = 1,
+    this.height = 100,
   }) : super(key: key);
 
   @override
@@ -26,7 +30,7 @@ class JdText extends StatelessWidget {
     ScreenAdapter.init(context);
     return Container(
       alignment: Alignment.center,
-      height: ScreenAdapter.height(100),
+      height: ScreenAdapter.height(this.height),
       margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       decoration: BoxDecoration(border: this.border),
@@ -41,6 +45,7 @@ class JdText extends StatelessWidget {
         ),
         onChanged: this.onChanged,
         inputFormatters: this.inputFormatters,
+        maxLines: this.maxLines,
       ),
     );
   }

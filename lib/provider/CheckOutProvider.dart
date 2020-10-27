@@ -29,6 +29,14 @@ class CheckOutProvider with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
+  double calcTotalAmount() {
+    double total = 0;
+    this._cartItem.forEach((el) {
+      total += el.count * el.price;
+    });
+    return total;
+  }
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);

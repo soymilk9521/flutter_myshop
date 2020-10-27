@@ -8,6 +8,9 @@ import 'package:flutter_myshop/model/RegisterArguments.dart';
 import 'package:flutter_myshop/pages/CheckOut.dart';
 import 'package:flutter_myshop/pages/ProductList.dart';
 import 'package:flutter_myshop/pages/Search.dart';
+import 'package:flutter_myshop/pages/address/AddressAdd.dart';
+import 'package:flutter_myshop/pages/address/AddressEdit.dart';
+import 'package:flutter_myshop/pages/address/AddressList.dart';
 import 'package:flutter_myshop/pages/products/ProductContent.dart';
 import 'package:flutter_myshop/pages/tabs/Cart.dart';
 import 'package:flutter_myshop/pages/tabs/Tabs.dart';
@@ -20,6 +23,9 @@ final routes = {
   LoginPage.routeName: (context) => LoginPage(),
   RegisterFirstPage.routeName: (context) => RegisterFirstPage(),
   CheckOutPage.routeName: (context) => CheckOutPage(),
+  AddressAddPage.routeName: (context) => AddressAddPage(),
+  AddressEditPage.routeName: (context) => AddressEditPage(),
+  AddressListPage.routeName: (context) => AddressListPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {

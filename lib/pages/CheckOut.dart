@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/model/CartModel.dart';
+import 'package:flutter_myshop/pages/address/AddressList.dart';
 import 'package:flutter_myshop/provider/CheckOutProvider.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:provider/provider.dart';
@@ -15,52 +16,57 @@ class CheckOutPage extends StatefulWidget {
 class _CheckOutPageState extends State<CheckOutPage> {
   CheckOutProvider checkOutProvider;
   Widget _checkOutItemWidget(CartModel item) {
-    return Row(
+    return Column(
       children: [
-        Container(
-          width: ScreenAdapter.width(200),
-          child: Image.network(
-            "${item.pic}",
-            fit: BoxFit.cover,
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "${item.title}",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  "${item.selectedVal}",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Stack(
+        Row(
+          children: [
+            Container(
+              width: ScreenAdapter.width(200),
+              child: Image.network(
+                "${item.pic}",
+                fit: BoxFit.cover,
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "￥${item.price}",
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    Text(
+                      "${item.title}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text("x${item.count}"),
+                    Text(
+                      "${item.selectedVal}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "￥${item.price}",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text("x${item.count}"),
+                        )
+                      ],
                     )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
+        Divider(),
       ],
     );
   }
@@ -82,22 +88,26 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   color: Colors.white,
                   child: Column(
                     children: [
-                      // ListTile(
-                      //   leading: Icon(Icons.add_location),
-                      //   title: Center(
-                      //     child: Text("请添加您的地址"),
-                      //   ),
-                      //   trailing: Icon(Icons.keyboard_arrow_right),
-                      // )
                       ListTile(
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("xxx"),
-                            Text("xxx"),
-                          ],
+                        leading: Icon(Icons.add_location),
+                        title: Center(
+                          child: Text("请添加您的地址"),
                         ),
+                        trailing: Icon(Icons.keyboard_arrow_right),
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, AddressListPage.routeName);
+                        },
                       )
+                      // ListTile(
+                      //   title: Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Text("xxx"),
+                      //       Text("xxx"),
+                      //     ],
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
@@ -118,9 +128,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("商品总金额：￥100"),
+                      Text("商品总金额：￥${checkOutProvider.calcTotalAmount()}"),
                       SizedBox(height: 10),
-                      Text("运费：￥0"),
+                      Text("立减：￥8"),
                     ],
                   ),
                 ),
@@ -143,14 +153,16 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "总价：￥200",
+                          "实付款：￥${checkOutProvider.calcTotalAmount() - 8}",
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: RaisedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            print("立即下单");
+                          },
                           child: Text(
                             "立即下单",
                             style: TextStyle(color: Colors.white),
