@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/RegisterArguments.dart';
 import 'package:flutter_myshop/pages/tabs/Tabs.dart';
-import 'package:flutter_myshop/services/RegisterService.dart';
+import 'package:flutter_myshop/services/UserService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
@@ -57,7 +57,7 @@ class _RegisterThirdPageState extends State<RegisterThirdPage> {
           fontSize: 16.0);
       return false;
     }
-    RegisterService.setUserInfo(result.data);
+    UserService.setUserInfo(result.data);
     return true;
   }
 

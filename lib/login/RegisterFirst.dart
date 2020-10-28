@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/RegisterArguments.dart';
-import 'package:flutter_myshop/services/RegisterService.dart';
+import 'package:flutter_myshop/services/UserService.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -73,10 +73,10 @@ class _RegisterFirstPageState extends State<RegisterFirstPage> {
             SizedBox(height: 10),
             JdButton(
               text: "下一步",
-              color: RegisterService.checkNumber(this._number)
+              color: UserService.checkNumber(this._number)
                   ? Colors.red
                   : Colors.grey,
-              cb: RegisterService.checkNumber(this._number)
+              cb: UserService.checkNumber(this._number)
                   ? () async {
                       await _getValidationCode();
                       if (this._arguments != null && this._arguments.success) {

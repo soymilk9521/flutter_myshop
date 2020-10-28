@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/login/Login.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
-import 'package:flutter_myshop/services/RegisterService.dart';
+import 'package:flutter_myshop/services/UserService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 
@@ -20,7 +20,7 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    RegisterService.getUserInfo().then((value) {
+    UserService.getUserInfo().then((value) {
       print("user ---> init ---> $value");
       setState(() {
         _userInfo = value;
@@ -29,7 +29,7 @@ class _UserPageState extends State<UserPage> {
 
     bus = eventBus.on<LoginEvent>().listen((event) {
       print("user --> event --> ${event.result}");
-      RegisterService.getUserInfo().then((value) {
+      UserService.getUserInfo().then((value) {
         setState(() {
           _userInfo = value;
         });
@@ -151,7 +151,7 @@ class _UserPageState extends State<UserPage> {
                   color: Colors.red,
                   cb: () {
                     print("退出登录");
-                    RegisterService.removeUserInfo();
+                    UserService.removeUserInfo();
                     eventBus.fire(LoginEvent("退出成功!"));
                   },
                 )

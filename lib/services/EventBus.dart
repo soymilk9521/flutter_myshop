@@ -11,3 +11,8 @@ class LoginEvent {
   String result;
   LoginEvent(this.result);
 }
+
+class AddressEvent {
+  String result;
+  AddressEvent(this.result);
+}

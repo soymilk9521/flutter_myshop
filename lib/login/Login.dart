@@ -1,12 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/login/RegisterFirst.dart';
-import 'package:flutter_myshop/pages/tabs/Tabs.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
-import 'package:flutter_myshop/services/RegisterService.dart';
+import 'package:flutter_myshop/services/UserService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
@@ -38,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
       var result = await requet.post(url, data: data);
       print("login ---> login ---> $result");
       if (result.data["success"]) {
-        RegisterService.setUserInfo(result.data);
+        UserService.setUserInfo(result.data);
         Navigator.pop(context);
         eventBus.fire(LoginEvent("登录成功!"));
       } else {
