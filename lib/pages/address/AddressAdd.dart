@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/AddressModelArgument.dart';
-import 'package:flutter_myshop/pages/address/AddressList.dart';
+import 'package:flutter_myshop/provider/UserProvider.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/SaltService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
-import 'package:flutter_myshop/services/UserService.dart';
 import 'package:flutter_myshop/widget/JdButton.dart';
 import 'package:flutter_myshop/widget/JdText.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class AddressAddPage extends StatefulWidget {
   static const String routeName = "/address_add";
@@ -22,26 +22,17 @@ class AddressAddPage extends StatefulWidget {
 
 class _AddressAddPageState extends State<AddressAddPage> {
   AddressModelArgument _model = new AddressModelArgument();
+  UserProvider userProvider;
+  String _area = "";
   @override
   void initState() {
     super.initState();
-    this._initData();
-  }
-
-  void _initData() async {
-    await UserService.getUserInfo().then((list) {
-      if (list != null && list.length > 0) {
-        setState(() {
-          this._model.uId = list[0]["_id"];
-          this._model.salt = list[0]["salt"];
-        });
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
+    this.userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("添加收货地址"),
@@ -80,9 +71,7 @@ class _AddressAddPageState extends State<AddressAddPage> {
                   children: [
                     Icon(Icons.add_location),
                     Text(
-                      this._model.address.length > 0
-                          ? this._model.address
-                          : "省/市/区",
+                      this._area.length > 0 ? this._area : "省/市/区",
                       style: TextStyle(fontSize: ScreenAdapter.size(36)),
                     ),
                   ],
@@ -100,7 +89,7 @@ class _AddressAddPageState extends State<AddressAddPage> {
                     ),
                   );
                   setState(() {
-                    this._model.address =
+                    this._area =
                         "${result.provinceName}/${result.cityName}/${result.areaName}";
                   });
                 },
@@ -110,19 +99,26 @@ class _AddressAddPageState extends State<AddressAddPage> {
               text: "详细地址",
               height: 200,
               maxLines: 4,
-              onChanged: (val) {},
+              onChanged: (val) {
+                setState(() {
+                  this._model.address = this._area + val;
+                });
+              },
             ),
             SizedBox(height: 40),
             JdButton(
               text: "添加",
               cb: () async {
-                String sign = SaltService.getSign(this._model.toAddJson());
+                this._model.uId = this.userProvider.getUserId();
+                this._model.salt = this.userProvider.getSalt();
+                String sign =
+                    SaltService.getSign(this._model.toAddressAddSignJson());
                 this._model.sign = sign;
                 Dio dio = Dio();
                 var url = '${Config.domain}api/addAddress';
                 print("AddressAdd --> url --> $url");
-                Response response =
-                    await dio.post(url, data: this._model.toJson());
+                Response response = await dio.post(url,
+                    data: this._model.toAddressAddDataJson());
                 if (!response.data["success"]) {
                   Fluttertoast.showToast(
                       msg: "${response.data["message"]}!",
@@ -134,8 +130,9 @@ class _AddressAddPageState extends State<AddressAddPage> {
                       fontSize: 16.0);
                   return;
                 }
+
                 eventBus.fire(AddressEvent("地址添加成功..."));
-                Navigator.pushNamed(context, AddressListPage.routeName);
+                Navigator.pop(context);
               },
               color: Colors.red,
             )

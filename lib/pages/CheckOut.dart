@@ -1,9 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_myshop/config/Config.dart';
+import 'package:flutter_myshop/model/AddressModelArgument.dart';
 import 'package:flutter_myshop/model/CartModel.dart';
 import 'package:flutter_myshop/pages/address/AddressList.dart';
 import 'package:flutter_myshop/provider/CheckOutProvider.dart';
+import 'package:flutter_myshop/services/SaltService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
+import 'package:flutter_myshop/services/UserService.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_myshop/services/EventBus.dart';
 
 class CheckOutPage extends StatefulWidget {
   static const String routeName = "checkout";
@@ -14,6 +21,49 @@ class CheckOutPage extends StatefulWidget {
 }
 
 class _CheckOutPageState extends State<CheckOutPage> {
+  AddressModelArgument _model = new AddressModelArgument();
+  List _list = [];
+  @override
+  void initState() {
+    super.initState();
+    eventBus.on<AddressEditEvent>().listen((event) {
+      print("CheckOut ---> AddressEditEvent ---> ${event.result}");
+      this._initData();
+    });
+    this._initData();
+  }
+
+  void _initData() async {
+    await UserService.getUserInfo().then((list) {
+      if (list != null && list.length > 0) {
+        this._model.uId = list[0]["_id"];
+        this._model.salt = list[0]["salt"];
+      }
+    });
+    String sign = SaltService.getSign(this._model.toAddressListSignJson());
+    Dio dio = Dio();
+    var url =
+        '${Config.domain}api/oneAddressList?uid=${this._model.uId}&sign=$sign';
+    print("CheckOut --> url --> $url");
+    Response response = await dio.get(url);
+    if (!response.data["success"]) {
+      Fluttertoast.showToast(
+          msg: "${response.data["message"]}!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.pink,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+    if (mounted) {
+      setState(() {
+        this._list = response.data["result"];
+      });
+    }
+  }
+
   CheckOutProvider checkOutProvider;
   Widget _checkOutItemWidget(CartModel item) {
     return Column(
@@ -88,26 +138,33 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   color: Colors.white,
                   child: Column(
                     children: [
-                      ListTile(
-                        leading: Icon(Icons.add_location),
-                        title: Center(
-                          child: Text("请添加您的地址"),
-                        ),
-                        trailing: Icon(Icons.keyboard_arrow_right),
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, AddressListPage.routeName);
-                        },
-                      )
-                      // ListTile(
-                      //   title: Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Text("xxx"),
-                      //       Text("xxx"),
-                      //     ],
-                      //   ),
-                      // )
+                      this._list.length > 0
+                          ? ListTile(
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "${this._list[0]["name"]} ${this._list[0]["phone"]}"),
+                                  Text("${this._list[0]["address"]}"),
+                                ],
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, AddressListPage.routeName);
+                              },
+                            )
+                          : ListTile(
+                              leading: Icon(Icons.add_location),
+                              title: Center(
+                                child: Text("请添加您的地址"),
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, AddressListPage.routeName);
+                              },
+                            ),
                     ],
                   ),
                 ),

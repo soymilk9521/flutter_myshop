@@ -1,4 +1,5 @@
 class AddressModelArgument {
+  String sId;
   String uId;
   String sign;
   String name;
@@ -7,6 +8,7 @@ class AddressModelArgument {
   String salt;
 
   AddressModelArgument({
+    this.sId = "",
     this.uId = "",
     this.sign = "",
     this.name = "",
@@ -16,6 +18,7 @@ class AddressModelArgument {
   });
 
   AddressModelArgument.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
     uId = json['uid'];
     name = json['name'];
     sign = json['sign'];
@@ -24,19 +27,58 @@ class AddressModelArgument {
     phone = json['phone'];
   }
 
-  Map<String, dynamic> toJson() {
+  // get sign for adding address
+  Map<String, dynamic> toAddressAddSignJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['uid'] = this.uId;
+    data['name'] = this.name;
+    data['address'] = this.address;
+    data['phone'] = this.phone;
+    data['salt'] = this.salt;
+    return data;
+  }
+
+  // add address data
+  Map<String, dynamic> toAddressAddDataJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['uid'] = this.uId;
     data['name'] = this.name;
     data['sign'] = this.sign;
-    data['salt'] = this.salt;
     data['address'] = this.address;
     data['phone'] = this.phone;
     return data;
   }
 
-  Map<String, dynamic> toAddJson() {
+  // get sign for address list
+  Map<String, dynamic> toAddressListSignJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['uid'] = this.uId;
+    data['salt'] = this.salt;
+    return data;
+  }
+
+  // get sign for changing default address
+  Map<String, dynamic> toDefaultAddressSignJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.sId;
+    data['uid'] = this.uId;
+    data['salt'] = this.salt;
+    return data;
+  }
+
+  // change default address
+  Map<String, dynamic> toDefaultAddressDataJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.sId;
+    data['uid'] = this.uId;
+    data['sign'] = this.sign;
+    return data;
+  }
+
+  // get sign for editing address
+  Map<String, dynamic> toAddressEditSignJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.sId;
     data['uid'] = this.uId;
     data['name'] = this.name;
     data['address'] = this.address;
@@ -45,10 +87,15 @@ class AddressModelArgument {
     return data;
   }
 
-  Map<String, dynamic> toListJson() {
+  // edit address data
+  Map<String, dynamic> toAddressEditDataJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.sId;
     data['uid'] = this.uId;
-    data['salt'] = this.salt;
+    data['name'] = this.name;
+    data['address'] = this.address;
+    data['phone'] = this.phone;
+    data['sign'] = this.sign;
     return data;
   }
 }

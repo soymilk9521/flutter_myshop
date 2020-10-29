@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_myshop/pages/Search.dart';
 import 'package:flutter_myshop/pages/tabs/Cart.dart';
 import 'package:flutter_myshop/pages/tabs/Category.dart';
 import 'package:flutter_myshop/pages/tabs/Home.dart';
@@ -8,14 +7,18 @@ import 'package:flutter_myshop/services/ScreenAdaper.dart';
 
 class Tabs extends StatefulWidget {
   static const root = "/";
-  Tabs({Key key}) : super(key: key);
+  final int selectedIndex;
+  Tabs({
+    Key key,
+    this.selectedIndex = 2,
+  }) : super(key: key);
 
   @override
   _TabsState createState() => _TabsState();
 }
 
 class _TabsState extends State<Tabs> {
-  int _currentIndex = 2;
+  int _currentIndex = 0;
   PageController _pageController;
   List<Widget> _pageList = [
     HomePage(),
@@ -26,7 +29,11 @@ class _TabsState extends State<Tabs> {
   @override
   void initState() {
     super.initState();
-    this._pageController = new PageController(initialPage: this._currentIndex);
+    setState(() {
+      this._currentIndex = widget.selectedIndex;
+      this._pageController =
+          new PageController(initialPage: this._currentIndex);
+    });
   }
 
   @override

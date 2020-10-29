@@ -16,3 +16,8 @@ class AddressEvent {
   String result;
   AddressEvent(this.result);
 }
+
+class AddressEditEvent {
+  String result;
+  AddressEditEvent(this.result);
+}

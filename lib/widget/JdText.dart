@@ -11,6 +11,7 @@ class JdText extends StatelessWidget {
   final Border border;
   final int maxLines;
   final double height;
+  final TextEditingController controller;
   const JdText({
     Key key,
     this.text = "请输入",
@@ -23,6 +24,7 @@ class JdText extends StatelessWidget {
     ),
     this.maxLines = 1,
     this.height = 100,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -35,6 +37,7 @@ class JdText extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       decoration: BoxDecoration(border: this.border),
       child: TextField(
+        controller: controller,
         style: TextStyle(fontSize: ScreenAdapter.size(36)),
         obscureText: this.password,
         decoration: InputDecoration(

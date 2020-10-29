@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/pages/CheckOut.dart';
 import 'package:flutter_myshop/pages/cart/CartItem.dart';
+import 'package:flutter_myshop/pages/tabs/Tabs.dart';
 import 'package:flutter_myshop/provider/CartProvider.dart';
 import 'package:flutter_myshop/provider/CheckOutProvider.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
+import 'package:flutter_myshop/services/UserService.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +18,19 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  bool _logined = false;
+  @override
+  void initState() {
+    super.initState();
+    UserService.getUserInfo().then((list) {
+      if (list != null && list.length > 0) {
+        if (list.length > 0) {
+          this._logined = true;
+        }
+      }
+    });
+  }
+
   CartProvider cartProvider;
   CheckOutProvider checkOutProvider;
   bool _flag = true;
@@ -109,9 +124,19 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   onTap: () {
                                     print("结算");
-                                    Navigator.pushNamed(
-                                        context, CheckOutPage.routeName);
-                                    checkOutProvider.getcheckOutItem();
+                                    if (this._logined) {
+                                      Navigator.pushNamed(
+                                          context, CheckOutPage.routeName);
+                                      checkOutProvider.getcheckOutItem();
+                                    } else {
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Tabs(selectedIndex: 3)),
+                                        (route) => route == null,
+                                      );
+                                    }
                                   },
                                 )
                               : InkWell(
