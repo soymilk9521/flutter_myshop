@@ -6,6 +6,8 @@ class AddressModelArgument {
   String phone;
   String address;
   String salt;
+  String allPrice;
+  String products;
 
   AddressModelArgument({
     this.sId = "",
@@ -15,6 +17,8 @@ class AddressModelArgument {
     this.phone = "",
     this.address = "",
     this.salt = "",
+    this.allPrice = "",
+    this.products = "",
   });
 
   AddressModelArgument.fromJson(Map<String, dynamic> json) {
@@ -25,6 +29,8 @@ class AddressModelArgument {
     salt = json['salt'];
     address = json['address'];
     phone = json['phone'];
+    allPrice = json['all_price'];
+    products = json['products'];
   }
 
   // get sign for adding address
@@ -95,6 +101,33 @@ class AddressModelArgument {
     data['name'] = this.name;
     data['address'] = this.address;
     data['phone'] = this.phone;
+    data['sign'] = this.sign;
+    return data;
+  }
+
+  // get sign for checkout
+  Map<String, dynamic> toCheckOutSignJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['uid'] = this.uId;
+    data['name'] = this.name;
+    data['address'] = this.address;
+    data['phone'] = this.phone;
+    data['all_price'] = this.allPrice;
+    data['products'] = this.products;
+    data['salt'] = this.salt;
+    return data;
+  }
+
+  // checkout data
+  Map<String, dynamic> toCheckOutDataJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.sId;
+    data['uid'] = this.uId;
+    data['name'] = this.name;
+    data['address'] = this.address;
+    data['phone'] = this.phone;
+    data['all_price'] = this.allPrice;
+    data['products'] = this.products;
     data['sign'] = this.sign;
     return data;
   }

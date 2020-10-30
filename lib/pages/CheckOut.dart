@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/AddressModelArgument.dart';
 import 'package:flutter_myshop/model/CartModel.dart';
+import 'package:flutter_myshop/pages/Pay.dart';
 import 'package:flutter_myshop/pages/address/AddressList.dart';
+import 'package:flutter_myshop/provider/CartProvider.dart';
 import 'package:flutter_myshop/provider/CheckOutProvider.dart';
 import 'package:flutter_myshop/services/SaltService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
@@ -65,6 +69,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
   }
 
   CheckOutProvider checkOutProvider;
+  CartProvider cartProvider;
+
   Widget _checkOutItemWidget(CartModel item) {
     return Column(
       children: [
@@ -124,6 +130,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
   @override
   Widget build(BuildContext context) {
     checkOutProvider = Provider.of<CheckOutProvider>(context);
+    cartProvider = Provider.of<CartProvider>(context);
+
     ScreenAdapter.init(context);
     return Scaffold(
         appBar: AppBar(
@@ -217,8 +225,40 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: RaisedButton(
-                          onPressed: () {
-                            print("立即下单");
+                          onPressed: () async {
+                            this._model.address = this._list[0]["address"];
+                            this._model.name = this._list[0]["name"];
+                            this._model.phone = this._list[0]["phone"];
+                            this._model.allPrice =
+                                (checkOutProvider.calcTotalAmount() - 8)
+                                    .toStringAsFixed(1);
+                            List tempList = [];
+                            checkOutProvider.cartItems().forEach((element) {
+                              tempList.add(element.toJson());
+                            });
+                            this._model.products = json.encode(tempList);
+                            String sign = SaltService.getSign(
+                                this._model.toCheckOutSignJson());
+                            this._model.sign = sign;
+                            Dio dio = Dio();
+                            var url = '${Config.domain}api/doOrder';
+                            print("CheckOut --> url --> $url");
+                            Response response = await dio.post(url,
+                                data: this._model.toCheckOutDataJson());
+                            if (!response.data["success"]) {
+                              Fluttertoast.showToast(
+                                  msg: "${response.data["message"]}!",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.pink,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              return;
+                            }
+                            checkOutProvider.updateCheckOutItem();
+                            cartProvider.updateData();
+                            Navigator.pushNamed(context, PayPage.routeName);
                           },
                           child: Text(
                             "立即下单",

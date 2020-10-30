@@ -7,6 +7,7 @@ import 'package:flutter_myshop/model/ProductArguments.dart';
 import 'package:flutter_myshop/model/ProductContentArguments.dart';
 import 'package:flutter_myshop/model/RegisterArguments.dart';
 import 'package:flutter_myshop/pages/CheckOut.dart';
+import 'package:flutter_myshop/pages/Pay.dart';
 import 'package:flutter_myshop/pages/ProductList.dart';
 import 'package:flutter_myshop/pages/Search.dart';
 import 'package:flutter_myshop/pages/address/AddressAdd.dart';
@@ -26,6 +27,7 @@ final routes = {
   CheckOutPage.routeName: (context) => CheckOutPage(),
   AddressAddPage.routeName: (context) => AddressAddPage(),
   AddressListPage.routeName: (context) => AddressListPage(),
+  PayPage.routeName: (context) => PayPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {
