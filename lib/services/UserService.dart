@@ -9,7 +9,6 @@ class UserService {
 
   static Future<void> setUserInfo(Map result) async {
     if (result != null && result[USERINFO] != null) {
-      print("register ---> setUserInfo ---> ${result[USERINFO]}");
       await Storage.setString(USERINFO, json.encode(result[USERINFO]));
     }
   }
@@ -17,7 +16,6 @@ class UserService {
   static Future<List> getUserInfo() async {
     try {
       List userInfo = json.decode(await Storage.getString(USERINFO));
-      print("register ---> getUserInfo ---> $userInfo");
       return userInfo;
     } catch (e) {
       return [];
@@ -26,6 +24,5 @@ class UserService {
 
   static Future<void> removeUserInfo() async {
     await Storage.remove(USERINFO);
-    print("register ---> removeUserInfo ---> 退出登录");
   }
 }

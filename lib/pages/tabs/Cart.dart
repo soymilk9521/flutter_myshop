@@ -48,8 +48,6 @@ class _CartPageState extends State<CartPage> {
             onPressed: () {
               setState(() {
                 this._flag = !this._flag;
-
-                print(this._flag);
               });
             },
           ),
@@ -123,7 +121,6 @@ class _CartPageState extends State<CartPage> {
                                         style: TextStyle(color: Colors.white)),
                                   ),
                                   onTap: () {
-                                    print("结算");
                                     if (this._logined) {
                                       Navigator.pushNamed(
                                           context, CheckOutPage.routeName);

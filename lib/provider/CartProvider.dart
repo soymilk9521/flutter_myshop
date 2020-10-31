@@ -19,7 +19,7 @@ class CartProvider with ChangeNotifier, DiagnosticableTreeMixin {
 
   List<CartModel> cartItems() => this._cartItem;
 
-  void initData() async {
+  initData() async {
     try {
       this._cartItem = [];
       result = json.decode(await Storage.getString(CartService.CARTLIST));
@@ -33,7 +33,7 @@ class CartProvider with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  void updateData() {
+  updateData() async {
     initData();
   }
 
@@ -44,7 +44,7 @@ class CartProvider with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  void deleteItem() async {
+  deleteItem() async {
     this._cartItem.removeWhere((element) => element.checked);
     result = this._cartItem.map((e) => e.toJson()).toList();
     print("CartProvider ---> deleteItem ---> $result");
@@ -56,7 +56,7 @@ class CartProvider with ChangeNotifier, DiagnosticableTreeMixin {
     return this._cartItem.every((element) => element.checked);
   }
 
-  void checkAll(value) async {
+  checkAll(value) async {
     print("----> $value");
     this._cartItem.forEach((element) => element.checked = value);
     result = this._cartItem.map((e) => e.toJson()).toList();

@@ -134,143 +134,152 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
     ScreenAdapter.init(context);
     return Scaffold(
-        appBar: AppBar(
-          title: Text("结算"),
-        ),
-        body: Stack(
-          children: [
-            ListView(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(5),
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      this._list.length > 0
-                          ? ListTile(
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      "${this._list[0]["name"]} ${this._list[0]["phone"]}"),
-                                  Text("${this._list[0]["address"]}"),
-                                ],
-                              ),
-                              trailing: Icon(Icons.keyboard_arrow_right),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, AddressListPage.routeName);
-                              },
-                            )
-                          : ListTile(
-                              leading: Icon(Icons.add_location),
-                              title: Center(
-                                child: Text("请添加您的地址"),
-                              ),
-                              trailing: Icon(Icons.keyboard_arrow_right),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, AddressListPage.routeName);
-                              },
+      appBar: AppBar(
+        title: Text("结算"),
+      ),
+      body: Stack(
+        children: [
+          ListView(
+            children: [
+              Container(
+                padding: EdgeInsets.all(5),
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    this._list.length > 0
+                        ? ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "${this._list[0]["name"]} ${this._list[0]["phone"]}"),
+                                Text("${this._list[0]["address"]}"),
+                              ],
                             ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.all(20),
-                  color: Colors.white,
-                  child: Column(
-                    children: checkOutProvider.cartItems().map((el) {
-                      return _checkOutItemWidget(el);
-                    }).toList(),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("商品总金额：￥${checkOutProvider.calcTotalAmount()}"),
-                      SizedBox(height: 10),
-                      Text("立减：￥8"),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 0,
-              child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  width: ScreenAdapter.width(1200),
-                  height: ScreenAdapter.height(100),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      top: BorderSide(width: 1, color: Colors.black12),
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "实付款：￥${checkOutProvider.calcTotalAmount() - 8}",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: RaisedButton(
-                          onPressed: () async {
-                            this._model.address = this._list[0]["address"];
-                            this._model.name = this._list[0]["name"];
-                            this._model.phone = this._list[0]["phone"];
-                            this._model.allPrice =
-                                (checkOutProvider.calcTotalAmount() - 8)
-                                    .toStringAsFixed(1);
-                            List tempList = [];
-                            checkOutProvider.cartItems().forEach((element) {
-                              tempList.add(element.toJson());
-                            });
-                            this._model.products = json.encode(tempList);
-                            String sign = SaltService.getSign(
-                                this._model.toCheckOutSignJson());
-                            this._model.sign = sign;
-                            Dio dio = Dio();
-                            var url = '${Config.domain}api/doOrder';
-                            print("CheckOut --> url --> $url");
-                            Response response = await dio.post(url,
-                                data: this._model.toCheckOutDataJson());
-                            if (!response.data["success"]) {
-                              Fluttertoast.showToast(
-                                  msg: "${response.data["message"]}!",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.pink,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
-                              return;
-                            }
-                            checkOutProvider.updateCheckOutItem();
-                            cartProvider.updateData();
-                            Navigator.pushNamed(context, PayPage.routeName);
-                          },
-                          child: Text(
-                            "立即下单",
-                            style: TextStyle(color: Colors.white),
+                            trailing: Icon(Icons.keyboard_arrow_right),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AddressListPage.routeName);
+                            },
+                          )
+                        : ListTile(
+                            leading: Icon(Icons.add_location),
+                            title: Center(
+                              child: Text("请添加您的地址"),
+                            ),
+                            trailing: Icon(Icons.keyboard_arrow_right),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AddressListPage.routeName);
+                            },
                           ),
-                          color: Colors.red,
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              checkOutProvider.cartCount() > 0
+                  ? Container(
+                      padding: EdgeInsets.all(20),
+                      color: Colors.white,
+                      child: Column(
+                        children: checkOutProvider.cartItems().map((el) {
+                          return _checkOutItemWidget(el);
+                        }).toList(),
+                      ),
+                    )
+                  : Text(""),
+              SizedBox(height: 10),
+              checkOutProvider.cartCount() > 0
+                  ? Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("商品总金额：￥${checkOutProvider.calcTotalAmount()}"),
+                          SizedBox(height: 10),
+                          Text("立减：￥8"),
+                        ],
+                      ),
+                    )
+                  : Text(""),
+            ],
+          ),
+          checkOutProvider.cartCount() > 0
+              ? Positioned(
+                  bottom: 0,
+                  child: Container(
+                      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      width: ScreenAdapter.width(1200),
+                      height: ScreenAdapter.height(100),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(width: 1, color: Colors.black12),
                         ),
                       ),
-                    ],
-                  )),
-            ),
-          ],
-        ));
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "实付款：￥${checkOutProvider.calcTotalAmount() - 8}",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: RaisedButton(
+                              onPressed: () async {
+                                this._model.address = this._list[0]["address"];
+                                this._model.name = this._list[0]["name"];
+                                this._model.phone = this._list[0]["phone"];
+                                this._model.allPrice =
+                                    (checkOutProvider.calcTotalAmount() - 8)
+                                        .toStringAsFixed(1);
+                                List tempList = [];
+                                checkOutProvider.cartItems().forEach((element) {
+                                  tempList.add(element.toJson());
+                                });
+                                this._model.products = json.encode(tempList);
+                                String sign = SaltService.getSign(
+                                    this._model.toCheckOutSignJson());
+                                this._model.sign = sign;
+                                Dio dio = Dio();
+                                var url = '${Config.domain}api/doOrder';
+                                print("CheckOut --> url --> $url");
+                                Response response = await dio.post(url,
+                                    data: this._model.toCheckOutDataJson());
+                                if (!response.data["success"]) {
+                                  Fluttertoast.showToast(
+                                      msg: "${response.data["message"]}!",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.pink,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                  return;
+                                }
+                                await checkOutProvider.updateCheckOutItem();
+                                await cartProvider.updateData();
+                                Navigator.pushNamed(context, PayPage.routeName);
+                              },
+                              child: Text(
+                                "立即下单",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      )),
+                )
+              : Center(
+                  child: Text("请选择您的宝!"),
+                ),
+        ],
+      ),
+    );
   }
 }

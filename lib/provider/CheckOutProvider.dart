@@ -13,24 +13,20 @@ class CheckOutProvider with ChangeNotifier, DiagnosticableTreeMixin {
 
   List<CartModel> cartItems() => this._cartItem;
 
-  void updateCheckOutItem() async {
-    List objResutl = [];
+  updateCheckOutItem() async {
     List jsonResult = [];
     List result = json.decode(await Storage.getString(CartService.CARTLIST));
     result.forEach((element) {
       if (!element["checked"]) {
-        objResutl.add(CartModel.fromJson(element));
+        jsonResult.add(element);
       }
     });
-    jsonResult = objResutl.map((value) {
-      return value.toJson();
-    }).toList();
     print("CheckOutProvider ---> 更新购物车商品 ---> $jsonResult");
     await Storage.setString(CartService.CARTLIST, json.encode(jsonResult));
-    notifyListeners();
+    await this.getcheckOutItem();
   }
 
-  void getcheckOutItem() async {
+  getcheckOutItem() async {
     try {
       this._cartItem = [];
       List result = json.decode(await Storage.getString(CartService.CARTLIST));
