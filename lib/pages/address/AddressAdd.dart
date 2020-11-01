@@ -132,6 +132,7 @@ class _AddressAddPageState extends State<AddressAddPage> {
                 }
 
                 eventBus.fire(AddressEvent("地址添加成功..."));
+                eventBus.fire(AddressEditEvent("地址修改成功..."));
                 Navigator.pop(context);
               },
               color: Colors.red,

@@ -108,6 +108,7 @@ class _AddressListPageState extends State<AddressListPage> {
       return;
     }
     this._initData();
+    eventBus.fire(AddressEditEvent("删除地址成功!"));
   }
 
   @override
@@ -121,78 +122,84 @@ class _AddressListPageState extends State<AddressListPage> {
         padding: EdgeInsets.all(ScreenAdapter.height(10)),
         child: Stack(
           children: [
-            ListView.builder(
-                itemCount: this._list.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        leading: this._list[index]["default_address"] == 1
-                            ? Icon(Icons.check, color: Colors.red)
-                            : null,
-                        title: InkWell(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  "${this._list[index]["name"]} ${this._list[index]["phone"]}"),
-                              Text("${this._list[index]["address"]}"),
-                            ],
-                          ),
-                          onTap: () {
-                            this._changeDefaultAddress(
-                              this._list[index]["_id"],
-                            );
-                          },
-                          onLongPress: () async {
-                            await showDialog(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("提示信息"),
-                                  content: Text("您确定删除吗？"),
-                                  actions: [
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text("取消"),
-                                    ),
-                                    FlatButton(
-                                      onPressed: () async {
-                                        Navigator.pop(context);
-                                        _deleteAddres(
-                                          this._list[index]["_id"],
-                                        );
-                                      },
-                                      child: Text("确定"),
-                                    )
-                                  ],
+            this._list.length != 0
+                ? ListView.builder(
+                    itemCount: this._list.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            leading: this._list[index]["default_address"] == 1
+                                ? Icon(Icons.check, color: Colors.red)
+                                : null,
+                            title: InkWell(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "${this._list[index]["name"]} ${this._list[index]["phone"]}"),
+                                  Text("${this._list[index]["address"]}"),
+                                ],
+                              ),
+                              onTap: () {
+                                this._changeDefaultAddress(
+                                  this._list[index]["_id"],
                                 );
                               },
-                            );
-                          },
-                        ),
-                        trailing: IconButton(
-                            icon: Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () {
-                              this._model.sId = this._list[index]["_id"];
-                              this._model.name = this._list[index]["name"];
-                              this._model.address =
-                                  this._list[index]["address"];
-                              this._model.phone = this._list[index]["phone"];
-                              Navigator.pushNamed(
-                                context,
-                                AddressEditPage.routeName,
-                                arguments: this._model,
-                              );
-                            }),
-                      ),
-                      Divider(),
-                    ],
-                  );
-                }),
+                              onLongPress: () async {
+                                await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text("提示信息"),
+                                      content: Text("您确定删除吗？"),
+                                      actions: [
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("取消"),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+                                            _deleteAddres(
+                                              this._list[index]["_id"],
+                                            );
+                                          },
+                                          child: Text("确定"),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            trailing: IconButton(
+                                icon: Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () {
+                                  this._model.sId = this._list[index]["_id"];
+                                  this._model.name = this._list[index]["name"];
+                                  this._model.address =
+                                      this._list[index]["address"];
+                                  this._model.phone =
+                                      this._list[index]["phone"];
+                                  Navigator.pushNamed(
+                                    context,
+                                    AddressEditPage.routeName,
+                                    arguments: this._model,
+                                  );
+                                }),
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text("未添加默认地址!"),
+                  ),
             Positioned(
               bottom: 0,
               child: Container(

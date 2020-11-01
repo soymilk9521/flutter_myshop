@@ -13,6 +13,8 @@ import 'package:flutter_myshop/pages/Search.dart';
 import 'package:flutter_myshop/pages/address/AddressAdd.dart';
 import 'package:flutter_myshop/pages/address/AddressEdit.dart';
 import 'package:flutter_myshop/pages/address/AddressList.dart';
+import 'package:flutter_myshop/pages/order/Order.dart';
+import 'package:flutter_myshop/pages/order/OrderInfo.dart';
 import 'package:flutter_myshop/pages/products/ProductContent.dart';
 import 'package:flutter_myshop/pages/tabs/Cart.dart';
 import 'package:flutter_myshop/pages/tabs/Tabs.dart';
@@ -28,6 +30,8 @@ final routes = {
   AddressAddPage.routeName: (context) => AddressAddPage(),
   AddressListPage.routeName: (context) => AddressListPage(),
   PayPage.routeName: (context) => PayPage(),
+  OrderPage.routeName: (context) => OrderPage(),
+  OrderInfoPage.routeName: (context) => OrderInfoPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {

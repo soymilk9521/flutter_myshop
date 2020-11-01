@@ -10,7 +10,7 @@ class Tabs extends StatefulWidget {
   final int selectedIndex;
   Tabs({
     Key key,
-    this.selectedIndex = 2,
+    this.selectedIndex = 3,
   }) : super(key: key);
 
   @override

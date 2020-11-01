@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/config/Config.dart';
 import 'package:flutter_myshop/model/AddressModelArgument.dart';
-import 'package:flutter_myshop/pages/address/AddressList.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/SaltService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
@@ -140,6 +139,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 }
 
                 eventBus.fire(AddressEvent("地址修改成功..."));
+                eventBus.fire(AddressEditEvent("地址修改成功..."));
                 Navigator.pop(context);
               },
               color: Colors.red,

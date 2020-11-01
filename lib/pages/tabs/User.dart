@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_myshop/login/Login.dart';
+import 'package:flutter_myshop/pages/order/Order.dart';
 import 'package:flutter_myshop/services/EventBus.dart';
 import 'package:flutter_myshop/services/UserService.dart';
 import 'package:flutter_myshop/services/ScreenAdaper.dart';
@@ -118,6 +119,9 @@ class _UserPageState extends State<UserPage> {
           ListTile(
             leading: Icon(Icons.assignment, color: Colors.red),
             title: Text("全部订单"),
+            onTap: () {
+              Navigator.pushNamed(context, OrderPage.routeName);
+            },
           ),
           Divider(),
           ListTile(

@@ -231,6 +231,17 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             alignment: Alignment.centerRight,
                             child: RaisedButton(
                               onPressed: () async {
+                                if (this._list.length == 0) {
+                                  Fluttertoast.showToast(
+                                      msg: "请选择默认邮寄地址",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.pink,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                  return;
+                                }
                                 this._model.address = this._list[0]["address"];
                                 this._model.name = this._list[0]["name"];
                                 this._model.phone = this._list[0]["phone"];
