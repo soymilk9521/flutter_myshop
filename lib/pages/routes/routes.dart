@@ -3,6 +3,7 @@ import 'package:flutter_myshop/login/RegisterFirst.dart';
 import 'package:flutter_myshop/login/RegisterSecond.dart';
 import 'package:flutter_myshop/login/RegisterThird.dart';
 import 'package:flutter_myshop/model/AddressModelArgument.dart';
+import 'package:flutter_myshop/model/OrderArgument.dart';
 import 'package:flutter_myshop/model/ProductArguments.dart';
 import 'package:flutter_myshop/model/ProductContentArguments.dart';
 import 'package:flutter_myshop/model/RegisterArguments.dart';
@@ -31,7 +32,6 @@ final routes = {
   AddressListPage.routeName: (context) => AddressListPage(),
   PayPage.routeName: (context) => PayPage(),
   OrderPage.routeName: (context) => OrderPage(),
-  OrderInfoPage.routeName: (context) => OrderInfoPage(),
 };
 
 var onGenerateRoute = (RouteSettings settings) {
@@ -76,6 +76,15 @@ var onGenerateRoute = (RouteSettings settings) {
     return MaterialPageRoute(
       builder: (context) {
         return AddressEditPage(
+          arguments: arguments,
+        );
+      },
+    );
+  } else if (settings.name == OrderInfoPage.routeName) {
+    final OrderArgument arguments = settings.arguments;
+    return MaterialPageRoute(
+      builder: (context) {
+        return OrderInfoPage(
           arguments: arguments,
         );
       },

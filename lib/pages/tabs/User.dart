@@ -23,9 +23,11 @@ class _UserPageState extends State<UserPage> {
     super.initState();
     UserService.getUserInfo().then((value) {
       print("user ---> init ---> $value");
-      setState(() {
-        _userInfo = value;
-      });
+      if (mounted) {
+        setState(() {
+          _userInfo = value;
+        });
+      }
     });
 
     bus = eventBus.on<LoginEvent>().listen((event) {
